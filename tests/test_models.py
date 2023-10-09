@@ -5,9 +5,12 @@ Test cases for Customer Model
 import os
 import logging
 import unittest
-from service.models import Customer, DataValidationError, db
+
+# from service.models import Customer, DataValidationError, db
+from service.models import Customer, db
 from service import app
-from tests.factories import CustomerFactory
+
+# from tests.factories import CustomerFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
@@ -63,21 +66,3 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(
             customer.address, "1724 Green Acres Road, Rocky Mount, New York, 00000"
         )
-
-
-#    def test_add_a_customer(self):
-#        """It should Create a customer and add it to the database"""
-#        customers = Customer.all()
-#        self.assertEqual(customers, [])
-#        customer = Customer(
-#            first_name="Michael",
-#            last_name="Parker",
-#            address="1724 Green Acres Road, Rocky Mount, New York, 00000",
-#        )
-#        self.assertTrue(customer is not None)
-#        self.assertEqual(customer.id, None)
-#        customer.create()
-#        # Assert that it was assigned an id and shows up in the database
-#        self.assertIsNotNone(customer.id)
-#        customers = Customer.all()
-#        self.assertEqual(len(customers), 1)

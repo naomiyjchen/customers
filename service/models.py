@@ -44,15 +44,6 @@ class Customer(db.Model):
         """Used for debugging"""
         return f"<Customer {self.first_name} {self.last_name} id=[{self.id}]>"
 
-    #    def create(self):
-    #        """
-    #        Creates a Customer to the database
-    #        """
-    #        logger.info("Creating %s %s", self.first_name, self.last_name)
-    #        self.id = None  # pylint: disable=invalid-name
-    #        db.session.add(self)
-    #        db.session.commit()
-
     ##################################################
     # Class Methods
     ##################################################
