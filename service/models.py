@@ -44,6 +44,54 @@ class Customer(db.Model):
         """Used for debugging"""
         return f"<Customer {self.first_name} {self.last_name} id=[{self.id}]>"
 
+    def create(self):
+        """
+        Creates a Pet to the database
+        """
+        logger.info("Creating %s %s", self.first_name, self.last_name)
+        # id must be none to generate next primary key
+        self.id = None  # pylint: disable=invalid-name
+        db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        """
+        Updates a Customer to the database
+        """
+        logger.info("Saving %s %s", self.first_name, self.last_name)
+        if not self.id:
+            raise DataValidationError("Update called with empty ID field")
+        db.session.commit()
+
+    def serialize(self) -> dict:
+        """Serializes a Customer into a dictionary"""
+        return {
+            "id": self.id,
+            "first name": self.first_name,
+            "last name": self.last_name,
+            "address": self.address,
+        }
+
+    def deserialize(self, data: dict):
+        """
+        Deserializes a Customer from a dictionary
+        Args:
+            data (dict): A dictionary containing the Pet data
+        """
+        try:
+            self.first_name = data["first name"]
+            self.last_name = data["last name"]
+            self.address = data["address"]
+        except KeyError as error:
+            raise DataValidationError(
+                "Invalid pet: missing " + error.args[0]
+            ) from error
+        except TypeError as error:
+            raise DataValidationError(
+                "Invalid pet: body of request contained bad or no data " + str(error)
+            ) from error
+        return self
+
     ##################################################
     # Class Methods
     ##################################################
@@ -57,19 +105,17 @@ class Customer(db.Model):
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
 
+    @classmethod
+    def all(cls):
+        """Returns all of the Customers in the database"""
+        logger.info("Processing all Customers")
+        return cls.query.all()
 
-#    @classmethod
-#    def all(cls):
-#        """Returns all of the Customers in the database"""
-#        logger.info("Processing all Customers")
-#        return cls.query.all()
-
-
-#    @classmethod
-#    def find(cls, by_id):
-#        """Finds a Customer by it's ID"""
-#        logger.info("Processing lookup for id %s ...", by_id)
-#        return cls.query.get(by_id)
+    @classmethod
+    def find(cls, by_id):
+        """Finds a Customer by it's ID"""
+        logger.info("Processing lookup for id %s ...", by_id)
+        return cls.query.get(by_id)
 
 
 #    @classmethod
