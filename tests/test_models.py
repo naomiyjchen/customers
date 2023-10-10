@@ -6,9 +6,9 @@ import os
 import logging
 import unittest
 
-# from service.models import Customer, DataValidationError, db
-from service.models import Customer, db
+from service.models import Customer, DataValidationError, db
 from service import app
+from tests.factories import CustomerFactory
 
 # from tests.factories import CustomerFactory
 
@@ -66,3 +66,112 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(
             customer.address, "1724 Green Acres Road, Rocky Mount, New York, 00000"
         )
+
+    def test_update_a_customer(self):
+        """It should Update a Customer"""
+        customer = CustomerFactory()
+        logging.debug(customer)
+        customer.id = None
+        customer.create()
+        logging.debug(customer)
+        self.assertIsNotNone(customer.id)
+        # Change the first name and save it
+        customer.first_name = "Joshua"
+        original_id = customer.id
+        customer.update()
+        self.assertEqual(customer.id, original_id)
+        self.assertEqual(customer.first_name, "Joshua")
+        # Change last name and save it
+        customer.last_name = "Williams"
+        original_id = customer.id
+        customer.update()
+        self.assertEqual(customer.id, original_id)
+        self.assertEqual(customer.last_name, "Williams")
+
+        # Change the address and save it
+        customer.address = "1724 Green Acres Road, Rocky Mount, New York, 10000"
+        original_id = customer.id
+        customer.update()
+        self.assertEqual(customer.id, original_id)
+        self.assertEqual(
+            customer.address, "1724 Green Acres Road, Rocky Mount, New York, 10000"
+        )
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        customers = Customer.all()
+        print(len(customers))
+        self.assertEqual(len(customers), 1)
+        self.assertEqual(customers[0].id, original_id)
+        self.assertEqual(customers[0].first_name, "Joshua")
+
+    def test_update_no_id(self):
+        """It should not Update a Customer with no id"""
+        customer = CustomerFactory()
+        logging.debug(customer)
+        customer.id = None
+        self.assertRaises(DataValidationError, customer.update)
+
+    def test_list_all_customers(self):
+        """It should List all Customers in the database"""
+        customers = Customer.all()
+        self.assertEqual(customers, [])
+        # Create 5 Customers
+        for _ in range(5):
+            customer = CustomerFactory()
+            customer.create()
+        # See if we get back 5 pets
+        customers = Customer.all()
+        self.assertEqual(len(customers), 5)
+
+    def test_serialize_a_customer(self):
+        """It should serialize a Customer"""
+        customer = CustomerFactory()
+        data = customer.serialize()
+        self.assertNotEqual(data, None)
+        self.assertIn("id", data)
+        self.assertEqual(data["id"], customer.id)
+        self.assertIn("first name", data)
+        self.assertEqual(data["first name"], customer.first_name)
+        self.assertIn("last name", data)
+        self.assertEqual(data["last name"], customer.last_name)
+        self.assertIn("address", data)
+        self.assertEqual(data["address"], customer.address)
+
+    def test_deserialize_a_pet(self):
+        """It should de-serialize a Customer"""
+        data = CustomerFactory().serialize()
+        customer = Customer()
+        customer.deserialize(data)
+        self.assertNotEqual(customer, None)
+        self.assertEqual(customer.id, None)
+        self.assertEqual(customer.first_name, data["first name"])
+        self.assertEqual(customer.last_name, data["last name"])
+        self.assertEqual(customer.address, data["address"])
+
+    def test_deserialize_missing_data(self):
+        """It should not deserialize a Customer with missing data"""
+        data = {"id": 1, "first name": "Vernon"}
+        customer = Customer()
+        self.assertRaises(DataValidationError, customer.deserialize, data)
+
+    def test_deserialize_bad_data(self):
+        """It should not deserialize bad data"""
+        data = "this is not a dictionary"
+        customer = Customer()
+        self.assertRaises(DataValidationError, customer.deserialize, data)
+
+    def test_find_pet(self):
+        """It should Find a Pet by ID"""
+        customers = CustomerFactory.create_batch(5)
+        for customer in customers:
+            customer.create()
+        logging.debug(customers)
+        # make sure they got saved
+        self.assertEqual(len(Customer.all()), 5)
+        # find the 2nd customer in the list
+        customer = Customer.find(customers[1].id)
+        self.assertIsNot(customer, None)
+        self.assertEqual(customer.id, customers[1].id)
+        self.assertEqual(customer.first_name, customers[1].first_name)
+        self.assertEqual(customer.last_name, customers[1].last_name)
+        self.assertEqual(customer.address, customers[1].address)
