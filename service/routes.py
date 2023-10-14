@@ -83,3 +83,27 @@ def update_customers(customer_id):
 
     app.logger.info("Customer with ID [%s] updated.", customer.id)
     return jsonify(customer.serialize()), status.HTTP_200_OK
+
+
+######################################################################
+# READ A Customer
+######################################################################
+@app.route("/customers/<int:customer_id>", methods=["GET"])
+def read_customers(customer_id):
+    """
+    Read a single Customer
+
+    This endpoint will return a Customer based on it's id
+    """
+    app.logger.info("Request for customer with id: %s", customer_id)
+    customer = Customer.find(customer_id)
+    if not customer:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            f"Customer with id '{customer_id}' was not found.",
+        )
+
+    app.logger.info(
+        "Returning customer: %s %s", customer.first_name, customer.last_name
+    )
+    return jsonify(customer.serialize()), status.HTTP_200_OK
