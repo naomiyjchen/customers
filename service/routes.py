@@ -15,7 +15,6 @@ from service.models import Customer
 # Import Flask application
 from . import app
 
-
 ######################################################################
 # GET INDEX
 ######################################################################
@@ -83,3 +82,21 @@ def update_customers(customer_id):
 
     app.logger.info("Customer with ID [%s] updated.", customer.id)
     return jsonify(customer.serialize()), status.HTTP_200_OK
+
+######################################################################
+# DELETE A Customer
+######################################################################
+@app.route("/customers/<int:customer_id>", methods=["DELETE"])
+def delete_customers(customer_id):
+    """
+    Delete a Customer
+
+    This endpoint will delete a Customer based the id specified in the path
+    """
+    app.logger.info("Request to delete pet with id: %s", customer_id)
+    customer = Customer.find(customer_id)
+    if customer:
+        customer.delete()
+
+    app.logger.info("Customer with ID [%s] delete complete.", customer_id)
+    return "", status.HTTP_204_NO_CONTENT

@@ -110,6 +110,15 @@ class TestCustomer(unittest.TestCase):
         logging.debug(customer)
         customer.id = None
         self.assertRaises(DataValidationError, customer.update)
+    
+    def test_delete_a_customer(self):
+        """It should Delete a Customer"""
+        customer = Customer()
+        customer.create()
+        self.assertEqual(len(Customer.all()), 1)
+        # delete the customer and make sure it isn't in the database
+        customer.delete()
+        self.assertEqual(len(Customer.all()), 0)
 
     def test_list_all_customers(self):
         """It should List all Customers in the database"""
@@ -119,7 +128,7 @@ class TestCustomer(unittest.TestCase):
         for _ in range(5):
             customer = CustomerFactory()
             customer.create()
-        # See if we get back 5 pets
+        # See if we get back 5 customers
         customers = Customer.all()
         self.assertEqual(len(customers), 5)
 
@@ -137,7 +146,7 @@ class TestCustomer(unittest.TestCase):
         self.assertIn("address", data)
         self.assertEqual(data["address"], customer.address)
 
-    def test_deserialize_a_pet(self):
+    def test_deserialize_a_customer(self):
         """It should de-serialize a Customer"""
         data = CustomerFactory().serialize()
         customer = Customer()
@@ -160,8 +169,8 @@ class TestCustomer(unittest.TestCase):
         customer = Customer()
         self.assertRaises(DataValidationError, customer.deserialize, data)
 
-    def test_find_pet(self):
-        """It should Find a Pet by ID"""
+    def test_find_customer(self):
+        """It should Find a Customer by ID"""
         customers = CustomerFactory.create_batch(5)
         for customer in customers:
             customer.create()
