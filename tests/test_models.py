@@ -67,6 +67,20 @@ class TestCustomer(unittest.TestCase):
             customer.address, "1724 Green Acres Road, Rocky Mount, New York, 00000"
         )
 
+    def test_read_a_customer(self):
+        """It should Read a Customer"""
+        customer = CustomerFactory()
+        logging.debug(customer)
+        customer.id = None
+        customer.create()
+        self.assertIsNotNone(customer.id)
+        # Fetch it back
+        found_customer = Customer.find(customer.id)
+        self.assertEqual(found_customer.id, customer.id)
+        self.assertEqual(found_customer.first_name, customer.first_name)
+        self.assertEqual(found_customer.last_name, customer.last_name)
+        self.assertEqual(found_customer.address, customer.address)
+
     def test_update_a_customer(self):
         """It should Update a Customer"""
         customer = CustomerFactory()
