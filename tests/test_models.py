@@ -124,10 +124,10 @@ class TestCustomer(unittest.TestCase):
         logging.debug(customer)
         customer.id = None
         self.assertRaises(DataValidationError, customer.update)
-    
+
     def test_delete_a_customer(self):
         """It should Delete a Customer"""
-        customer = Customer()
+        customer = CustomerFactory()
         customer.create()
         self.assertEqual(len(Customer.all()), 1)
         # delete the customer and make sure it isn't in the database

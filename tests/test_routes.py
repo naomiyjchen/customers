@@ -12,7 +12,6 @@ from service import app
 
 # from service.models import db
 from service.common import status  # HTTP Status Codes
-from service.models import db, Customer
 from tests.factories import CustomerFactory
 
 
@@ -93,16 +92,15 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_customer = response.get_json()
         self.assertEqual(updated_customer["address"], "unknown")
-    
+
     def test_delete_customer(self):
         """It should Delete a Customer"""
-        test_customer = self._create_customers(1)[0]
+        test_customer = CustomerFactory()
         response = self.client.delete(f"{BASE_URL}/{test_customer.id}")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(response.data), 0)
         response = self.client.get(f"{BASE_URL}/{test_customer.id}")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
 
     ######################################################################
     #  T E S T   S A D   P A T H S

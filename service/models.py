@@ -62,7 +62,7 @@ class Customer(db.Model):
         if not self.id:
             raise DataValidationError("Update called with empty ID field")
         db.session.commit()
-    
+
     def delete(self):
         """Removes a Customer from the data store"""
         logger.info("Deleting %s %s", self.first_name, self.last_name)
