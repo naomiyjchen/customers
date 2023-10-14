@@ -37,12 +37,9 @@ class TestYourResourceServer(TestCase):
     def setUp(self):
         """This runs before each test"""
         self.client = app.test_client()
-        db.session.query(Customer).delete()  # clean up the last tests
-        db.session.commit()
 
     def tearDown(self):
         """This runs after each test"""
-        db.session.remove()
 
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
@@ -61,13 +58,14 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # get the id of a pet
-        print(test_customer.id, response.get_json()["id"])
+        # print(test_customer.id, response.get_json()["id"])
+        test_customer.id = response.get_json()["id"]
         response = self.client.get(f"{BASE_URL}/{test_customer.id}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(data["id"], test_customer.id)
-        self.assertEqual(data["first_name"], test_customer.first_name)
-        self.assertEqual(data["last_name"], test_customer.last_name)
+        self.assertEqual(data["first name"], test_customer.first_name)
+        self.assertEqual(data["last name"], test_customer.last_name)
         self.assertEqual(data["address"], test_customer.address)
 
     def test_get_pet_not_found(self):
