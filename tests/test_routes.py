@@ -67,7 +67,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(data["last name"], test_customer.last_name)
         self.assertEqual(data["address"], test_customer.address)
 
-    def test_get_pet_not_found(self):
+    def test_get_customer_not_found(self):
         """It should not Get a Customer thats not found"""
         response = self.client.get(f"{BASE_URL}/0")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -96,6 +96,9 @@ class TestYourResourceServer(TestCase):
     def test_delete_customer(self):
         """It should Delete a Customer"""
         test_customer = CustomerFactory()
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        test_customer.id = response.get_json()["id"]
         response = self.client.delete(f"{BASE_URL}/{test_customer.id}")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(response.data), 0)
