@@ -12,7 +12,7 @@ from service import app
 
 # from service.models import db
 from service.common import status  # HTTP Status Codes
-
+from service.models import db, Customer
 from tests.factories import CustomerFactory
 
 
@@ -37,9 +37,12 @@ class TestYourResourceServer(TestCase):
     def setUp(self):
         """This runs before each test"""
         self.client = app.test_client()
+        db.session.query(Customer).delete()  # clean up the last tests
+        db.session.commit()
 
     def tearDown(self):
         """This runs after each test"""
+        db.session.remove()
 
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
@@ -49,6 +52,31 @@ class TestYourResourceServer(TestCase):
         """It should call the home page"""
         resp = self.client.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    def test_get_customer(self):
+        """It should Get a single Customer"""
+        # create a customer to read
+        test_customer = CustomerFactory()
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # get the id of a pet
+        print(test_customer.id, response.get_json()["id"])
+        response = self.client.get(f"{BASE_URL}/{test_customer.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["id"], test_customer.id)
+        self.assertEqual(data["first_name"], test_customer.first_name)
+        self.assertEqual(data["last_name"], test_customer.last_name)
+        self.assertEqual(data["address"], test_customer.address)
+
+    def test_get_pet_not_found(self):
+        """It should not Get a Customer thats not found"""
+        response = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
 
     def test_update_customer(self):
         """It should Update an existing Customer"""

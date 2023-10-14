@@ -174,8 +174,8 @@ class TestCustomer(unittest.TestCase):
         customer = Customer()
         self.assertRaises(DataValidationError, customer.deserialize, data)
 
-    def test_find_pet(self):
-        """It should Find a Pet by ID"""
+    def test_find_customer(self):
+        """It should Find a Customer by ID"""
         customers = CustomerFactory.create_batch(5)
         for customer in customers:
             customer.create()
