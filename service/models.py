@@ -1,5 +1,5 @@
 """
-Models for Customer
+Models for Customer licx
 
 All of the models are stored in this module
 """
