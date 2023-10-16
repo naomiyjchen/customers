@@ -56,7 +56,7 @@ class TestYourResourceServer(TestCase):
         response = self.client.post(BASE_URL, json=test_customer.serialize())
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # get the id of a pet
+        # get the id of a customer
         # print(test_customer.id, response.get_json()["id"])
         test_customer.id = response.get_json()["id"]
         response = self.client.get(f"{BASE_URL}/{test_customer.id}")
