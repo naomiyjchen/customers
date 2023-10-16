@@ -69,6 +69,15 @@ class Customer(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def list(self):
+        """
+        List all the customers in the database
+        """
+        logger.info("Listing %s %s", self.first_name, self.last_name)
+
+        db.session.list(self)
+        db.session.commit()
+        
     def serialize(self) -> dict:
         """Serializes a Customer into a dictionary"""
         return {
@@ -77,7 +86,7 @@ class Customer(db.Model):
             "last name": self.last_name,
             "address": self.address,
         }
-
+    
     def deserialize(self, data: dict):
         """
         Deserializes a Customer from a dictionary
@@ -122,6 +131,7 @@ class Customer(db.Model):
         """Finds a Customer by its ID"""
         logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.get(by_id)
+
 
 #    @classmethod
 #    def find_by_name(cls, name):
