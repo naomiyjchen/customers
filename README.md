@@ -9,14 +9,6 @@ This is a skeleton you can use to start your projects
 
 This project is about a representation of the customer accounts of the E-Commerce website for NYU CSCI-GA 2820, Fall 2023.
 
-## URLs
-| HTTP Methods | URL | Description |
-| ------- | ------- | ------- | 
-| POST | "/customers" | Create a Customer Object | 
-| GET | "/customers/<int:customer_id>" | List the information of the Customer with customer_id | 
-| PUT | "/customers/<int:customer_id>" | Update the the information of Customer with the customer_id  | 
-| DELETE | "/customers/<int:customer_id>" | Delete the Customer with customer_id |  
-
 ## Automatic Setup
 
 The best way to use this repo is to start your own repo using it as a git template. To do this just press the green **Use this template** button in GitHub and this will become the source for your repository.
@@ -63,6 +55,89 @@ tests/              - test cases package
 └── test_routes.py  - test suite for service routes
 ```
 
+## URLs
+| HTTP Methods | URL | Description |
+| ------- | ------- | ------- | 
+| POST | "/customers" | Create a Customer Object | 
+| GET | "/customers/<int:customer_id>" | List the information of the Customer with customer_id | 
+| PUT | "/customers/<int:customer_id>" | Update the the information of Customer with the customer_id  | 
+| DELETE | "/customers/<int:customer_id>" | Delete the Customer with customer_id | 
+
+## API Calls
+
+1. Create a customer record
+
+   - Description
+  
+   - Request URL
+  
+   - Request Body
+  
+   - Response
+  
+   - Example
+
+2. Update a customer record based on Customer ID
+
+   - Description
+  
+   - Request URL
+  
+   - Request Body
+  
+   - Response
+  
+   - Example
+
+3. Read a cutomer record based on Customer ID
+
+   - Description
+  
+   - Request URL
+  
+   - Request Body
+  
+   - Response
+  
+   - Example
+
+4. Delete a cutomer record based on Customer ID
+
+   - Description
+  
+   - Request URL
+  
+   - Request Body
+  
+   - Response
+  
+   - Example
+
+5. List all customer information
+
+   - Description
+  
+   - Request URL
+  
+   - Request Body
+  
+   - Response
+  
+   - Example
+
+
+## How to test
+
+To test the code from the VScode terminal, run:
+
+`green -vvv --processes=1 --run-coverage --termcolor --minimum-coverage=95`
+
+## How to run
+
+To start the service from the VScode terminal, run:
+
+`honcho start`
+
 ## License
 
 Copyright (c) John Rofrano. All rights reserved.
@@ -70,3 +145,4 @@ Copyright (c) John Rofrano. All rights reserved.
 Licensed under the Apache License. See [LICENSE](LICENSE)
 
 This repository is part of the NYU masters class: **CSCI-GA.2820-001 DevOps and Agile Methodologies** created and taught by *John Rofrano*, Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science, and NYU Stern School of Business.
+
