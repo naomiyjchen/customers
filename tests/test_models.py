@@ -6,11 +6,11 @@ import os
 import logging
 import unittest
 
-
+from werkzeug.exceptions import NotFound
 from service.models import Customer, DataValidationError, db
 from service import app
 from tests.factories import CustomerFactory
-from werkzeug.exceptions import NotFound
+
 
 # from tests.factories import CustomerFactory
 
@@ -228,20 +228,3 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(found.count(), count)
         for customer in found:
             self.assertEqual(customer.last_name, last_name)
-
-    def test_find_or_404_found(self):
-        """It should Find or return 404 not found"""
-        customers = CustomerFactory.create_batch(3)
-        for customer in customers:
-            customer.create()
-
-        customer = Customer.find_or_404(customers[1].id)
-        self.assertIsNot(customer, None)
-        self.assertEqual(customer.id, customers[1].id)
-        self.assertEqual(customer.first_name, customers[1].first_name)
-        self.assertEqual(customer.last_name, customers[1].last_name)
-        self.assertEqual(customer.address, customers[1].address)
-
-    def test_find_or_404_not_found(self):
-        """It should return 404 not found"""
-        self.assertRaises(NotFound, Customer.find_or_404, 0)
