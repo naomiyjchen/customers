@@ -142,12 +142,8 @@ def list_customers():
     """
     app.logger.info("Request for customer list")
     customers = []
-    first_name = request.args.get("firstname")
-    last_name = request.args.get("lastname")
-
-    ######################################################################
-    # address = request.args.get("address")
-    ######################################################################
+    first_name = request.args.get("first_name")
+    last_name = request.args.get("last_name")
 
     if first_name:
         customers = Customer.find_by_first_name(first_name)
