@@ -7,7 +7,7 @@ This is a skeleton you can use to start your projects
 
 ## Overview
 
-This project template contains starter code for your class project. The `/service` folder contains your `models.py` file for your model and a `routes.py` file for your service. The `/tests` folder has test case starter code for testing the model and the service separately. All you need to do is add your functionality. You can use the [lab-flask-tdd](https://github.com/nyu-devops/lab-flask-tdd) for code examples to copy from.
+This project is about a representation of the customer accounts of the E-Commerce website for NYU CSCI-GA 2820, Fall 2023.
 
 ## Automatic Setup
 
