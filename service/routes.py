@@ -37,6 +37,31 @@ def index():
 
 
 ######################################################################
+# List All EXISTING Customer
+######################################################################
+@app.route("/customers", methods=["GET"])
+def list_customers():
+    """
+    Returns all of the customers
+    """
+    app.logger.info("Request for customer list")
+    customers = []
+    first_name = request.args.get("first_name")
+    last_name = request.args.get("last_name")
+
+    if first_name:
+        customers = Customer.find_by_first_name(first_name)
+    elif last_name:
+        customers = Customer.find_by_last_name(last_name)
+    else:
+        customers = Customer.all()
+
+    results = [customer.serialize() for customer in customers]
+    app.logger.info("Returning %d customers", len(results))
+    return jsonify(results), status.HTTP_200_OK
+
+
+######################################################################
 # ADD A NEW Customer
 ######################################################################
 @app.route("/customers", methods=["POST"])
@@ -130,28 +155,3 @@ def read_customers(customer_id):
         "Returning customer: %s %s", customer.first_name, customer.last_name
     )
     return jsonify(customer.serialize()), status.HTTP_200_OK
-
-
-######################################################################
-# List All EXISTING Customer
-######################################################################
-@app.route("/customers", methods=["GET"])
-def list_customers():
-    """
-    Returns all of the customers
-    """
-    app.logger.info("Request for customer list")
-    customers = []
-    first_name = request.args.get("first_name")
-    last_name = request.args.get("last_name")
-
-    if first_name:
-        customers = Customer.find_by_first_name(first_name)
-    elif last_name:
-        customers = Customer.find_by_last_name(last_name)
-    else:
-        customers = Customer.all()
-
-    results = [customer.serialize() for customer in customers]
-    app.logger.info("Returning %d customers", len(results))
-    return jsonify(results), status.HTTP_200_OK
