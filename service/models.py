@@ -46,7 +46,7 @@ class Customer(db.Model):
 
     def create(self):
         """
-        Creates a Pet to the database
+        Creates a Customer to the database
         """
         logger.info("Creating %s %s", self.first_name, self.last_name)
         # id must be none to generate next primary key
@@ -69,6 +69,15 @@ class Customer(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def list(self):
+        """
+        List all the customers in the database
+        """
+        logger.info("Listing %s %s", self.first_name, self.last_name)
+
+        db.session.list(self)
+        db.session.commit()
+
     def serialize(self) -> dict:
         """Serializes a Customer into a dictionary"""
         return {
@@ -82,7 +91,7 @@ class Customer(db.Model):
         """
         Deserializes a Customer from a dictionary
         Args:
-            data (dict): A dictionary containing the Pet data
+            data (dict): A dictionary containing the Customer data
         """
         try:
             self.first_name = data["first name"]
