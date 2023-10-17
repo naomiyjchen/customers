@@ -54,6 +54,7 @@ class TestYourResourceServer(TestCase):
         test_customer = CustomerFactory()
         response = self.client.post(BASE_URL, json=test_customer.serialize())
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
         self._create_customers(5)
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
