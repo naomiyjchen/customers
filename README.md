@@ -9,6 +9,14 @@ This is a skeleton you can use to start your projects
 
 This project is about a representation of the customer accounts of the E-Commerce website for NYU CSCI-GA 2820, Fall 2023.
 
+## URLs
+| HTTP Methods | URL | Description |
+| ------- | ------- | ------- | 
+| POST | "/customers" | Create a Customer Object | 
+| GET | "/customers/<int:customer_id>" | List the information of the Customer with customer_id | 
+| PUT | "/customers/<int:customer_id>" | Update the the information of Customer with the customer_id  | 
+| DELETE | "/customers/<int:customer_id>" | Delete the Customer with customer_id |  
+
 ## Automatic Setup
 
 The best way to use this repo is to start your own repo using it as a git template. To do this just press the green **Use this template** button in GitHub and this will become the source for your repository.
