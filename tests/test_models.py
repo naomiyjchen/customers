@@ -67,6 +67,20 @@ class TestCustomer(unittest.TestCase):
             customer.address, "1724 Green Acres Road, Rocky Mount, New York, 00000"
         )
 
+    def test_read_a_customer(self):
+        """It should Read a Customer"""
+        customer = CustomerFactory()
+        logging.debug(customer)
+        customer.id = None
+        customer.create()
+        self.assertIsNotNone(customer.id)
+        # Fetch it back
+        found_customer = Customer.find(customer.id)
+        self.assertEqual(found_customer.id, customer.id)
+        self.assertEqual(found_customer.first_name, customer.first_name)
+        self.assertEqual(found_customer.last_name, customer.last_name)
+        self.assertEqual(found_customer.address, customer.address)
+
     def test_update_a_customer(self):
         """It should Update a Customer"""
         customer = CustomerFactory()
@@ -111,6 +125,15 @@ class TestCustomer(unittest.TestCase):
         customer.id = None
         self.assertRaises(DataValidationError, customer.update)
 
+    def test_delete_a_customer(self):
+        """It should Delete a Customer"""
+        customer = CustomerFactory()
+        customer.create()
+        self.assertEqual(len(Customer.all()), 1)
+        # delete the customer and make sure it isn't in the database
+        customer.delete()
+        self.assertEqual(len(Customer.all()), 0)
+
     def test_list_all_customers(self):
         """It should List all Customers in the database"""
         customers = Customer.all()
@@ -119,7 +142,7 @@ class TestCustomer(unittest.TestCase):
         for _ in range(5):
             customer = CustomerFactory()
             customer.create()
-        # See if we get back 5 pets
+        # See if we get back 5 customers
         customers = Customer.all()
         self.assertEqual(len(customers), 5)
 
@@ -137,7 +160,7 @@ class TestCustomer(unittest.TestCase):
         self.assertIn("address", data)
         self.assertEqual(data["address"], customer.address)
 
-    def test_deserialize_a_pet(self):
+    def test_deserialize_a_customer(self):
         """It should de-serialize a Customer"""
         data = CustomerFactory().serialize()
         customer = Customer()
@@ -160,8 +183,8 @@ class TestCustomer(unittest.TestCase):
         customer = Customer()
         self.assertRaises(DataValidationError, customer.deserialize, data)
 
-    def test_find_pet(self):
-        """It should Find a Pet by ID"""
+    def test_find_customer(self):
+        """It should Find a Customer by ID"""
         customers = CustomerFactory.create_batch(5)
         for customer in customers:
             customer.create()
@@ -170,6 +193,47 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(len(Customer.all()), 5)
         # find the 2nd customer in the list
         customer = Customer.find(customers[1].id)
+        self.assertIsNot(customer, None)
+        self.assertEqual(customer.id, customers[1].id)
+        self.assertEqual(customer.first_name, customers[1].first_name)
+        self.assertEqual(customer.last_name, customers[1].last_name)
+        self.assertEqual(customer.address, customers[1].address)
+
+    def test_find_by_first_name(self):
+        """It should Find customers by First Name"""
+        customers = CustomerFactory.create_batch(10)
+        for customer in customers:
+            customer.create()
+        first_name = customers[0].first_name
+        count = len(
+            [customer for customer in customers if customer.first_name == first_name]
+        )
+        found = Customer.find_by_first_name(first_name)
+        self.assertEqual(found.count(), count)
+        for customer in found:
+            self.assertEqual(customer.first_name, first_name)
+
+    def test_find_by_last_name(self):
+        """It should Find customers by Last Name"""
+        customers = CustomerFactory.create_batch(10)
+        for customer in customers:
+            customer.create()
+        last_name = customers[0].last_name
+        count = len(
+            [customer for customer in customers if customer.last_name == last_name]
+        )
+        found = Customer.find_by_last_name(last_name)
+        self.assertEqual(found.count(), count)
+        for customer in found:
+            self.assertEqual(customer.last_name, last_name)
+
+    def test_find_or_404_found(self):
+        """It should Find or return 404 not found"""
+        customers = CustomerFactory.create_batch(3)
+        for customer in customers:
+            customer.create()
+
+        customer = Customer.find_or_404(customers[1].id)
         self.assertIsNot(customer, None)
         self.assertEqual(customer.id, customers[1].id)
         self.assertEqual(customer.first_name, customers[1].first_name)

@@ -12,7 +12,6 @@ from service import app
 
 # from service.models import db
 from service.common import status  # HTTP Status Codes
-
 from tests.factories import CustomerFactory
 
 
@@ -50,6 +49,40 @@ class TestYourResourceServer(TestCase):
         resp = self.client.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
+    def test_get_customer_list(self):
+        """It should Get a list of Pets"""
+        self._create_customers(5)
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), 5)
+
+    def test_get_customer(self):
+        """It should Get a single Customer"""
+        # create a customer to read
+        test_customer = CustomerFactory()
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # get the id of a customer
+        # print(test_customer.id, response.get_json()["id"])
+        test_customer.id = response.get_json()["id"]
+        response = self.client.get(f"{BASE_URL}/{test_customer.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["id"], test_customer.id)
+        self.assertEqual(data["first name"], test_customer.first_name)
+        self.assertEqual(data["last name"], test_customer.last_name)
+        self.assertEqual(data["address"], test_customer.address)
+
+    def test_get_customer_not_found(self):
+        """It should not Get a Customer thats not found"""
+        response = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
+
     def test_update_customer(self):
         """It should Update an existing Customer"""
         # create a customer to update
@@ -67,6 +100,18 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_customer = response.get_json()
         self.assertEqual(updated_customer["address"], "unknown")
+
+    def test_delete_customer(self):
+        """It should Delete a Customer"""
+        test_customer = CustomerFactory()
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        test_customer.id = response.get_json()["id"]
+        response = self.client.delete(f"{BASE_URL}/{test_customer.id}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(response.data), 0)
+        response = self.client.get(f"{BASE_URL}/{test_customer.id}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     ######################################################################
     #  T E S T   S A D   P A T H S
