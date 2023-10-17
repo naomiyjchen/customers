@@ -51,6 +51,9 @@ class TestYourResourceServer(TestCase):
 
     def test_get_customer_list(self):
         """It should Get a list of Customers"""
+        test_customer = CustomerFactory()
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self._create_customers(5)
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -106,6 +109,7 @@ class TestYourResourceServer(TestCase):
         test_customer = CustomerFactory()
         response = self.client.post(BASE_URL, json=test_customer.serialize())
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
         test_customer.id = response.get_json()["id"]
         response = self.client.delete(f"{BASE_URL}/{test_customer.id}")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
