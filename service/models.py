@@ -69,15 +69,6 @@ class Customer(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def list(self):
-        """
-        List all the customers in the database
-        """
-        logger.info("Listing %s %s", self.first_name, self.last_name)
-
-        db.session.list(self)
-        db.session.commit()
-
     def serialize(self) -> dict:
         """Serializes a Customer into a dictionary"""
         return {
