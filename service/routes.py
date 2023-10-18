@@ -23,7 +23,6 @@ from . import app
 def index():
     """Root URL response"""
     return (
-        "Reminder: return some useful information in json format about the service here",
         jsonify(
             paths=url_for("list_customers", _external=True),
         ),
