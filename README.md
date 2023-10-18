@@ -95,15 +95,13 @@ tests/              - test cases package
 
 **3. Read a cutomer record based on Customer ID**
 
-   - Description:
-     
-   - Request URL: 
+   - Description: This API call is used to read a customer's information by its customer id
   
-   - Request Body: 
+   - Request URL: "/customers/int:customer_id"
   
-   - Response
-  
-   - Example
+   - Response:
+       - if found, returns a JSON object containing the customer's id, first name, last name, and address
+       - if not found, returns a JSON object containing error messages
 
 **4. Delete a cutomer record based on Customer ID**
 
