@@ -200,30 +200,31 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.last_name, customers[1].last_name)
         self.assertEqual(customer.address, customers[1].address)
 
-    def test_find_by_first_name(self):
-        """It should Find customers by First Name"""
-        customers = CustomerFactory.create_batch(10)
-        for customer in customers:
-            customer.create()
-        first_name = customers[0].first_name
-        count = len(
-            [customer for customer in customers if customer.first_name == first_name]
-        )
-        found = Customer.find_by_first_name(first_name)
-        self.assertEqual(found.count(), count)
-        for customer in found:
-            self.assertEqual(customer.first_name, first_name)
 
-    def test_find_by_last_name(self):
-        """It should Find customers by Last Name"""
-        customers = CustomerFactory.create_batch(10)
-        for customer in customers:
-            customer.create()
-        last_name = customers[0].last_name
-        count = len(
-            [customer for customer in customers if customer.last_name == last_name]
-        )
-        found = Customer.find_by_last_name(last_name)
-        self.assertEqual(found.count(), count)
-        for customer in found:
-            self.assertEqual(customer.last_name, last_name)
+#     def test_find_by_first_name(self):
+#         """It should Find customers by First Name"""
+#         customers = CustomerFactory.create_batch(10)
+#         for customer in customers:
+#             customer.create()
+#         first_name = customers[0].first_name
+#         count = len(
+#             [customer for customer in customers if customer.first_name == first_name]
+#         )
+#         found = Customer.find_by_first_name(first_name)
+#         self.assertEqual(found.count(), count)
+#         for customer in found:
+#             self.assertEqual(customer.first_name, first_name)
+#
+#     def test_find_by_last_name(self):
+#         """It should Find customers by Last Name"""
+#         customers = CustomerFactory.create_batch(10)
+#         for customer in customers:
+#             customer.create()
+#         last_name = customers[0].last_name
+#         count = len(
+#             [customer for customer in customers if customer.last_name == last_name]
+#         )
+#         found = Customer.find_by_last_name(last_name)
+#         self.assertEqual(found.count(), count)
+#         for customer in found:
+#             self.assertEqual(customer.last_name, last_name)

@@ -55,7 +55,7 @@ class TestYourResourceServer(TestCase):
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################
     def _create_customers(self, count):
-        """Factory method to create pets in bulk"""
+        """Factory method to create customers in bulk"""
         customers = []
         for _ in range(count):
             test_customer = CustomerFactory()
@@ -63,7 +63,7 @@ class TestYourResourceServer(TestCase):
             self.assertEqual(
                 response.status_code,
                 status.HTTP_201_CREATED,
-                "Could not create test pet",
+                "Could not create test customer",
             )
             new_customer = response.get_json()
             test_customer.id = new_customer["id"]

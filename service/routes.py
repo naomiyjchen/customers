@@ -23,9 +23,10 @@ from . import app
 def index():
     """Root URL response"""
     return (
-        jsonify(
-            paths=url_for("list_customers", _external=True),
-        ),
+        #         jsonify(
+        #             paths=url_for("list_customers", _external=True),
+        #         ),
+        "Reminder: return some useful information in json format about the service here",
         status.HTTP_200_OK,
     )
 
@@ -36,33 +37,6 @@ def index():
 
 
 # Place your REST API code here ...
-
-
-######################################################################
-# List All EXISTING Customer
-######################################################################
-
-
-@app.route("/customers", methods=["GET"])
-def list_customers():
-    """
-    Returns all of the customers
-    """
-    app.logger.info("Request for customer list")
-    customers = []
-    first_name = request.args.get("first_name")
-    last_name = request.args.get("last_name")
-
-    if first_name:
-        customers = Customer.find_by_first_name(first_name)
-    elif last_name:
-        customers = Customer.find_by_last_name(last_name)
-    else:
-        customers = Customer.all()
-
-    results = [customer.serialize() for customer in customers]
-    app.logger.info("Returning %d customers", len(results))
-    return jsonify(results), status.HTTP_200_OK
 
 
 ######################################################################
@@ -159,3 +133,31 @@ def read_customers(customer_id):
         "Returning customer: %s %s", customer.first_name, customer.last_name
     )
     return jsonify(customer.serialize()), status.HTTP_200_OK
+
+
+######################################################################
+# List All EXISTING Customer
+######################################################################
+
+
+@app.route("/customers", methods=["GET"])
+def list_customers():
+    """
+    Returns all of the customers
+    """
+    app.logger.info("Request for customer list")
+    customers = []
+    #     first_name = request.args.get("first_name")
+    #     last_name = request.args.get("last_name")
+
+    #     if first_name:
+    #         customers = Customer.find_by_first_name(first_name)
+    #     elif last_name:
+    #         customers = Customer.find_by_last_name(last_name)
+    #     else:
+    #         customers = Customer.all()
+    customers = Customer.all()
+
+    results = [customer.serialize() for customer in customers]
+    app.logger.info("Returning %d customers", len(results))
+    return jsonify(results), status.HTTP_200_OK
