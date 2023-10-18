@@ -65,19 +65,25 @@ tests/              - test cases package
 
 ## API Calls
 
-1. Create a customer record
+**1. Create a customer record**
 
    - Description
+
+        This API call is used to create a new customer object.
   
    - Request URL
+
+        Send a POST request to the `/customers` endpoint to create a customer. The URL is: `/customers`
   
    - Request Body
   
+        A JSON file including "first name" (< 63 words), "last name" (< 63 words) and "address" (< 200 words)
+  
    - Response
   
-   - Example
+        `HTTP_201_CREATED` if succeed. 
 
-2. Update a customer record based on Customer ID
+**2. Update a customer record based on Customer ID**
 
    - Description: Update the first name, last name, or address of the Customer
   
@@ -87,7 +93,7 @@ tests/              - test cases package
   
    - Response: HTTP_200_OK; If customer does not exist, HTTP_404_NOT_FOUND
 
-3. Read a cutomer record based on Customer ID
+**3. Read a cutomer record based on Customer ID**
 
    - Description
   
@@ -99,7 +105,7 @@ tests/              - test cases package
   
    - Example
 
-4. Delete a cutomer record based on Customer ID
+**4. Delete a cutomer record based on Customer ID**
 
    - Description
   
@@ -111,7 +117,7 @@ tests/              - test cases package
   
    - Example
 
-5. List all customer information
+**5. List all customer information**
 
    - Description
   
