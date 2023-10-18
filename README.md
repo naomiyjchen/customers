@@ -79,15 +79,13 @@ tests/              - test cases package
 
 2. Update a customer record based on Customer ID
 
-   - Description
+   - Description: Update the first name, last name, or address of the Customer
   
-   - Request URL
+   - Request URL: "/customers/int:customer_id"
   
-   - Request Body
+   - Request Body: JOSN file containing the updated information of customer.
   
-   - Response
-  
-   - Example
+   - Response: HTTP_200_OK; If customer does not exist, HTTP_404_NOT_FOUND
 
 3. Read a cutomer record based on Customer ID
 
