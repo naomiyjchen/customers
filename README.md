@@ -89,17 +89,17 @@ tests/              - test cases package
   
    - Request URL: "/customers/int:customer_id"
   
-   - Request Body: JOSN file containing the updated information of customer.
+   - Request Body: JSON file containing the updated information of customer.
   
    - Response: HTTP_200_OK; If customer does not exist, HTTP_404_NOT_FOUND
 
 **3. Read a cutomer record based on Customer ID**
 
-   - Description
+   - Description:
+     
+   - Request URL: 
   
-   - Request URL
-  
-   - Request Body
+   - Request Body: 
   
    - Response
   
@@ -108,14 +108,22 @@ tests/              - test cases package
 **4. Delete a cutomer record based on Customer ID**
 
    - Description
+     
+         Delete the customer information based on Customer ID
   
-   - Request URL
+   - Request URL:
+   
+       "/customers/<int:customer_id>" DELETE request
   
-   - Request Body
+   - Request Body: /
   
    - Response
+
+         HTTP_204_NO_CONTENT
   
    - Example
+
+         "customer/1" -> deletes the customer and its information for the customer with id = 1
 
 **5. List all customer information**
 
