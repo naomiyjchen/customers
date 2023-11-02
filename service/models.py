@@ -36,6 +36,9 @@ class Customer(db.Model):
     first_name = db.Column(db.String(63), nullable=False)
     last_name = db.Column(db.String(63), nullable=False)
     address = db.Column(db.String(200), nullable=False)
+    status = db.Column(
+        db.Boolean(), nullable=False, default=True
+    )  # activated by default, deactivated if False
 
     ##################################################
     # Instance Methods
@@ -76,6 +79,7 @@ class Customer(db.Model):
             "first name": self.first_name,
             "last name": self.last_name,
             "address": self.address,
+            "active": self.status,
         }
 
     def deserialize(self, data: dict):
@@ -88,6 +92,12 @@ class Customer(db.Model):
             self.first_name = data["first name"]
             self.last_name = data["last name"]
             self.address = data["address"]
+            if isinstance(data["active"], bool):
+                self.status = data["active"]
+            else:
+                raise DataValidationError(
+                    "Invalid type for boolean [active]: " + str(type(data["active"]))
+                )
         except KeyError as error:
             raise DataValidationError(
                 "Invalid customer: missing " + error.args[0]
