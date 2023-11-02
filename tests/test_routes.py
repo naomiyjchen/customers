@@ -141,6 +141,28 @@ class TestYourResourceServer(TestCase):
         response = self.client.get(f"{BASE_URL}/{test_customer.id}")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_restore_customer(self):
+        """It should restore a Customer"""
+        test_customer = CustomerFactory()
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        test_customer.id = response.get_json()["id"]
+        response = self.client.delete(f"{BASE_URL}/{test_customer.id}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        response = self.client.get(f"{BASE_URL}/{test_customer.id}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        response = self.client.patch(f"{BASE_URL}/{test_customer.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"{BASE_URL}/{test_customer.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["id"], test_customer.id)
+        self.assertEqual(data["active"], True)
+
     ######################################################################
     #  T E S T   S A D   P A T H S
     ######################################################################
@@ -150,6 +172,21 @@ class TestYourResourceServer(TestCase):
         # Test the status code
         response = self.client.put(f"{BASE_URL}/{'123'}", json={"address": "unknown"})
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_status(self):
+        """It is not allowed updating the status through PUT"""
+        test_customer = CustomerFactory()
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # update the customer
+        new_customer = response.get_json()
+        logging.debug(new_customer)
+        new_customer["active"] = False
+        response = self.client.put(
+            f"{BASE_URL}/{new_customer['id']}", json=new_customer
+        )
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_create_customer_no_data(self):
         """It should not Create a customer with missing data"""
@@ -167,3 +204,8 @@ class TestYourResourceServer(TestCase):
             BASE_URL, data="", headers={"Content-Type": "application/xml"}
         )
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_restore_invalid_id(self):
+        """It should return 404 not found"""
+        response = self.client.patch(f"{BASE_URL}/{'193759541'}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

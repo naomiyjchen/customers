@@ -186,6 +186,14 @@ class TestCustomer(unittest.TestCase):
         data = "this is not a dictionary"
         customer = Customer()
         self.assertRaises(DataValidationError, customer.deserialize, data)
+        data = {
+            "id": 1,
+            "first name": "abc",
+            "last name": "def",
+            "address": "ghi",
+            "active": "not Boolean",
+        }
+        self.assertRaises(DataValidationError, customer.deserialize, data)
 
     def test_find_customer(self):
         """It should Find a Customer by ID"""
