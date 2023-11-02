@@ -62,6 +62,7 @@ tests/              - test cases package
 | GET | "/customers/<int:customer_id>" | List the information of the Customer with customer_id | 
 | PUT | "/customers/<int:customer_id>" | Update the the information of Customer with the customer_id  | 
 | DELETE | "/customers/<int:customer_id>" | Delete the Customer with customer_id | 
+| PATCH | "/customers/<int:customer_id>" | Restore a deleted account with customer_id |
 
 ## API Calls
 
@@ -91,7 +92,13 @@ tests/              - test cases package
   
    - Request Body: JSON file containing the updated information of customer.
   
-   - Response: HTTP_200_OK; If customer does not exist, HTTP_404_NOT_FOUND
+   - Response: 
+
+        `HTTP_200_OK`, if found; 
+        
+        `HTTP_404_NOT_FOUND`, if customer does not exist or has been deactivated
+
+        `HTTP_405_METHOD_NOT_ALLOWED`, if updated `status` is `False`
 
 **3. Read a cutomer record based on Customer ID**
 
@@ -134,6 +141,26 @@ tests/              - test cases package
    - Response
   
    - Example
+
+**6. Restore a deleted customer record**
+
+   - Description
+
+        This API call is used to restore a deleted customer record with customer_id from the database.
+
+   - Request URL
+
+        `"/customers/<int:customer_id>"` PATCH request
+  
+   - Request Body
+
+        /
+  
+   - Response
+
+        `HTTP_200_OK` if found and successfully restored
+
+        `HTTP_404_NOT_FOUND` if not found
 
 
 ## How to test
