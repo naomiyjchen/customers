@@ -32,6 +32,7 @@ class TestCustomer(unittest.TestCase):
         app.config["DEBUG"] = False
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
+        db.drop_all()
         Customer.init_db(app)
 
     @classmethod
@@ -58,6 +59,7 @@ class TestCustomer(unittest.TestCase):
             first_name="Michael",
             last_name="Parker",
             address="1724 Green Acres Road, Rocky Mount, New York, 00000",
+            status=True,
         )
         self.assertEqual(str(customer), "<Customer Michael Parker id=[None]>")
         self.assertTrue(customer is not None)
@@ -67,6 +69,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(
             customer.address, "1724 Green Acres Road, Rocky Mount, New York, 00000"
         )
+        self.assertEqual(customer.status, True)
 
     def test_read_a_customer(self):
         """It should Read a Customer"""
@@ -182,6 +185,14 @@ class TestCustomer(unittest.TestCase):
         """It should not deserialize bad data"""
         data = "this is not a dictionary"
         customer = Customer()
+        self.assertRaises(DataValidationError, customer.deserialize, data)
+        data = {
+            "id": 1,
+            "first name": "abc",
+            "last name": "def",
+            "address": "ghi",
+            "active": "not Boolean",
+        }
         self.assertRaises(DataValidationError, customer.deserialize, data)
 
     def test_find_customer(self):

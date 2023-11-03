@@ -74,13 +74,18 @@ def update_customers(customer_id):
     # check_content_type("application/json")
 
     customer = Customer.find(customer_id)
-    if not customer:
+    if not customer or not customer.status:
         abort(
             status.HTTP_404_NOT_FOUND,
             f"Customer with id '{customer_id}' was not found.",
         )
 
     customer.deserialize(request.get_json())
+    if not customer.status:
+        abort(
+            status.HTTP_405_METHOD_NOT_ALLOWED,
+            "Cannot update the status.",
+        )
     customer.id = customer_id
     customer.update()
 
@@ -103,7 +108,8 @@ def delete_customers(customer_id):
     app.logger.info("Request to delete customer with id: %s", customer_id)
     customer = Customer.find(customer_id)
     if customer:
-        customer.delete()
+        # customer.delete()
+        customer.deactivate()
 
     app.logger.info("Customer with ID [%s] delete complete.", customer_id)
     return "", status.HTTP_204_NO_CONTENT
@@ -123,7 +129,7 @@ def read_customers(customer_id):
     """
     app.logger.info("Request for customer with id: %s", customer_id)
     customer = Customer.find(customer_id)
-    if not customer:
+    if not customer or not customer.status:
         abort(
             status.HTTP_404_NOT_FOUND,
             f"Customer with id '{customer_id}' was not found.",
@@ -158,6 +164,28 @@ def list_customers():
     #         customers = Customer.all()
     customers = Customer.all()
 
-    results = [customer.serialize() for customer in customers]
+    results = [customer.serialize() for customer in customers if customer.status]
     app.logger.info("Returning %d customers", len(results))
     return jsonify(results), status.HTTP_200_OK
+
+
+######################################################################
+# Restore a deleted Customer account by its customerID
+######################################################################
+
+
+@app.route("/customers/<int:customer_id>", methods=["PATCH"])
+def restore_customers(customer_id):
+    """
+    Restore the account by its ID
+    """
+    app.logger.info("Request for restoring customer with id: %s", customer_id)
+    customer = Customer.find(customer_id)
+    if not customer:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            f"Customer with id '{customer_id}' was not found.",
+        )
+    customer.status = True
+    app.logger.info("Customer with ID [%s] restored.", customer.id)
+    return jsonify(customer.serialize()), status.HTTP_200_OK
