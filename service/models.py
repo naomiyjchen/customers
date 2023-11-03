@@ -139,34 +139,34 @@ class Customer(db.Model):
         logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.get(by_id)
 
+    @classmethod
+    def find_by_first_name(cls, first_name: str) -> list:
+        """Returns all Customers with the first name
 
-#     @classmethod
-#     def find_by_first_name(cls, first_name: str) -> list:
-#         """Returns all Customers with the first name
-#
-#         :param first_name: the first name of the Customers you want to match
-#         :type first_name: str
-#
-#         :return: a collection of Customers with that first name
-#         :rtype: list
-#
-#         """
-#         logger.info("Processing first name query for %s ...", first_name)
-#         return cls.query.filter(cls.first_name == first_name)
+        :param first_name: the first name of the Customers you want to match
+        :type first_name: str
 
-#     @classmethod
-#     def find_by_last_name(cls, last_name: str) -> list:
-#         """Returns all of the Customers with last name
-#
-#         :param last_name: the last name of the Customers you want to match
-#         :type last_name: str
-#
-#         :return: a collection of Customers with that last name
-#         :rtype: list
-#
-#         """
-#         logger.info("Processing last name query for %s ...", last_name)
-#         return cls.query.filter(cls.last_name == last_name)
+        :return: a collection of Customers with that first name
+        :rtype: list
+
+        """
+        logger.info("Processing first name query for %s ...", first_name)
+        return cls.query.filter(cls.first_name == first_name)
+
+    @classmethod
+    def find_by_last_name(cls, last_name: str) -> list:
+        """Returns all of the Customers with last name
+
+        :param last_name: the last name of the Customers you want to match
+        :type last_name: str
+
+        :return: a collection of Customers with that last name
+        :rtype: list
+
+        """
+        logger.info("Processing last name query for %s ...", last_name)
+        return cls.query.filter(cls.last_name == last_name)
+
 
 # @classmethod
 # def find_by_address(cls, address:str) -> list:
