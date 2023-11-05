@@ -169,7 +169,7 @@ class TestYourResourceServer(TestCase):
         customers = self._create_customers(10)
         test_first_name = customers[0].first_name
         response = self.client.get(
-            BASE_URL, query_string=f"first name={quote_plus(test_first_name)}"
+            BASE_URL, query_string=f"first_name={quote_plus(test_first_name)}"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
@@ -185,7 +185,7 @@ class TestYourResourceServer(TestCase):
         customers = self._create_customers(10)
         test_last_name = customers[0].last_name
         response = self.client.get(
-            BASE_URL, query_string=f"last name={quote_plus(test_last_name)}"
+            BASE_URL, query_string=f"last_name={quote_plus(test_last_name)}"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
