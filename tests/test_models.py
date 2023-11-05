@@ -211,30 +211,53 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.last_name, customers[1].last_name)
         self.assertEqual(customer.address, customers[1].address)
 
-    def test_find_by_first_name(self):
-        """It should Find customers by First Name"""
+    def test_find_by_name(self):
+        """It should find customers by full name"""
         customers = CustomerFactory.create_batch(10)
         for customer in customers:
             customer.create()
+        # Use the first customer's name for the search
         first_name = customers[0].first_name
+        last_name = customers[0].last_name
+        # Get the count of customers with the same full name
         count = len(
-            [customer for customer in customers if customer.first_name == first_name]
+            [
+                customer
+                for customer in customers
+                if customer.first_name == first_name and customer.last_name == last_name
+            ]
         )
-        found = Customer.find_by_first_name(first_name)
+        # Use the new method to find customers by full name
+        found = Customer.find_by_name(first_name, last_name)
         self.assertEqual(found.count(), count)
         for customer in found:
             self.assertEqual(customer.first_name, first_name)
-
-    def test_find_by_last_name(self):
-        """It should Find customers by Last Name"""
-        customers = CustomerFactory.create_batch(10)
-        for customer in customers:
-            customer.create()
-        last_name = customers[0].last_name
-        count = len(
-            [customer for customer in customers if customer.last_name == last_name]
-        )
-        found = Customer.find_by_last_name(last_name)
-        self.assertEqual(found.count(), count)
-        for customer in found:
             self.assertEqual(customer.last_name, last_name)
+
+    # def test_find_by_first_name(self):
+    #     """It should Find customers by First Name"""
+    #     customers = CustomerFactory.create_batch(10)
+    #     for customer in customers:
+    #         customer.create()
+    #     first_name = customers[0].first_name
+    #     count = len(
+    #         [customer for customer in customers if customer.first_name == first_name]
+    #     )
+    #     found = Customer.find_by_first_name(first_name)
+    #     self.assertEqual(found.count(), count)
+    #     for customer in found:
+    #         self.assertEqual(customer.first_name, first_name)
+
+    # def test_find_by_last_name(self):
+    #     """It should Find customers by Last Name"""
+    #     customers = CustomerFactory.create_batch(10)
+    #     for customer in customers:
+    #         customer.create()
+    #     last_name = customers[0].last_name
+    #     count = len(
+    #         [customer for customer in customers if customer.last_name == last_name]
+    #     )
+    #     found = Customer.find_by_last_name(last_name)
+    #     self.assertEqual(found.count(), count)
+    #     for customer in found:
+    #         self.assertEqual(customer.last_name, last_name)
