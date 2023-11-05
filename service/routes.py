@@ -153,16 +153,16 @@ def list_customers():
     """
     app.logger.info("Request for customer list")
     customers = []
-    #     first_name = request.args.get("first_name")
-    #     last_name = request.args.get("last_name")
+    first_name = request.args.get("first_name")
+    last_name = request.args.get("last_name")
 
-    #     if first_name:
-    #         customers = Customer.find_by_first_name(first_name)
-    #     elif last_name:
-    #         customers = Customer.find_by_last_name(last_name)
-    #     else:
-    #         customers = Customer.all()
-    customers = Customer.all()
+    if first_name:
+        customers = Customer.find_by_first_name(first_name)
+    elif last_name:
+        customers = Customer.find_by_last_name(last_name)
+    else:
+        customers = Customer.all()
+    # customers = Customer.all()
 
     results = [customer.serialize() for customer in customers if customer.status]
     app.logger.info("Returning %d customers", len(results))
