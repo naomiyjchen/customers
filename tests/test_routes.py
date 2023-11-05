@@ -186,37 +186,37 @@ class TestYourResourceServer(TestCase):
             self.assertEqual(customer["first name"], test_first_name)
             self.assertEqual(customer["last name"], test_last_name)
 
-    # def test_query_customer_list_by_first_name(self):
-    #     """It should Query Customers by First Name"""
-    #     customers = self._create_customers(10)
-    #     test_first_name = customers[0].first_name
-    #     response = self.client.get(
-    #         BASE_URL, query_string=f"first_name={quote_plus(test_first_name)}"
-    #     )
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     data = response.get_json()
-    #     last_name_customers = [
-    #         customer for customer in data if customer["first name"] == test_first_name
-    #     ]
-    #     # check the data just to be sure
-    #     for customer in last_name_customers:
-    #         self.assertEqual(customer["first name"], test_first_name)
+    def test_query_customer_list_by_first_name(self):
+        """It should Query Customers by First Name"""
+        customers = self._create_customers(10)
+        test_first_name = customers[0].first_name
+        response = self.client.get(
+            BASE_URL, query_string=f"first_name={quote_plus(test_first_name)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        last_name_customers = [
+            customer for customer in data if customer["first name"] == test_first_name
+        ]
+        # check the data just to be sure
+        for customer in last_name_customers:
+            self.assertEqual(customer["first name"], test_first_name)
 
-    # def test_query_customer_list_by_last_name(self):
-    #     """Query Customers by last name"""
-    #     customers = self._create_customers(10)
-    #     test_last_name = customers[0].last_name
-    #     response = self.client.get(
-    #         BASE_URL, query_string=f"last_name={quote_plus(test_last_name)}"
-    #     )
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     data = response.get_json()
-    #     last_name_customers = [
-    #         customer for customer in data if customer["last name"] == test_last_name
-    #     ]
-    #     # check the data just to be sure
-    #     for customer in last_name_customers:
-    #         self.assertEqual(customer["last name"], test_last_name)
+    def test_query_customer_list_by_last_name(self):
+        """Query Customers by last name"""
+        customers = self._create_customers(10)
+        test_last_name = customers[0].last_name
+        response = self.client.get(
+            BASE_URL, query_string=f"last_name={quote_plus(test_last_name)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        last_name_customers = [
+            customer for customer in data if customer["last name"] == test_last_name
+        ]
+        # check the data just to be sure
+        for customer in last_name_customers:
+            self.assertEqual(customer["last name"], test_last_name)
 
     ######################################################################
     #  T E S T   S A D   P A T H S
