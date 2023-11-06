@@ -155,6 +155,7 @@ def list_customers():
     customers = []
     first_name = request.args.get("first_name")
     last_name = request.args.get("last_name")
+    address = request.args.get("address")
     if first_name and last_name:
         # Find by name
         customers = Customer.find_by_name(first_name, last_name)
@@ -162,6 +163,8 @@ def list_customers():
         customers = Customer.find_by_first_name(first_name)
     elif last_name:
         customers = Customer.find_by_last_name(last_name)
+    elif address:
+        customers = Customer.find_by_address(address)
     else:
         customers = Customer.all()
     # customers = Customer.all()

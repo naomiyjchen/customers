@@ -181,3 +181,13 @@ class Customer(db.Model):
         return cls.query.filter(
             cls.first_name == first_name, cls.last_name == last_name
         )
+
+    @classmethod
+    def find_by_address(cls, address: str) -> list:
+        """Returns all Customers with the given address
+
+        Args:
+            address (string): the address of the Customers
+        """
+        logger.info("Processing address query for %s ...", address)
+        return cls.query.filter(cls.address == address)

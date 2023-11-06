@@ -218,6 +218,22 @@ class TestYourResourceServer(TestCase):
         for customer in last_name_customers:
             self.assertEqual(customer["last name"], test_last_name)
 
+    def test_query_customer_list_by_address(self):
+        """Query Customers by address"""
+        customers = self._create_customers(10)
+        test_address = customers[0].address
+        response = self.client.get(
+            BASE_URL, query_string=f"address={quote_plus(test_address)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        address_customers = [
+            customer for customer in data if customer["address"] == test_address
+        ]
+        # check the data just to be sure
+        for customer in address_customers:
+            self.assertEqual(customer["address"], test_address)
+
     ######################################################################
     #  T E S T   S A D   P A T H S
     ######################################################################
