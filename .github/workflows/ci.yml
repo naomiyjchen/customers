@@ -1,0 +1,51 @@
+name: CI Build
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'README.md'
+      - '.vscode/**'
+
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - 'README.md'
+      - '.vscode/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: python:3.9-slim
+
+    services:
+      postgres:
+        image: postgres:alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: |
+          python3 -m pip install --upgrade pip wheel
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Linting
+        run: |
+          flake8 service tests --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 service tests --count --max-complexity=10 --max-line-length=127 --statistics
+          pylint service tests --max-line-length=127
+
+      - name: Run unit test with green
+        run: green -vvv --processes=1 --run-coverage --termcolor --minimum-coverage=95
+        env:
+          DATABASE_URI: "postgresql://postgres:postgres@postgres:5432/postgres"
