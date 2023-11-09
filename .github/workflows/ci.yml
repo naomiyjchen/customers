@@ -21,9 +21,12 @@ jobs:
 
     services:
       postgres:
-        image: postgres:alpine
+        image: postgres
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: pgs3cr3t
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -33,6 +36,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Install libraries for PostgreSQL
+        run: |
+          apt-get update
+          apt-get install -y gcc libpq-dev
 
       - name: Install Dependencies
         run: |
@@ -46,6 +54,8 @@ jobs:
           pylint service tests --max-line-length=127
 
       - name: Run unit test with green
-        run: green -vvv --processes=1 --run-coverage --termcolor --minimum-coverage=95
+        run: |
+          export FLASK_APP=service:app
+          green -vvv --processes=1 --run-coverage --termcolor --minimum-coverage=95
         env:
-          DATABASE_URI: "postgresql://postgres:postgres@postgres:5432/postgres"
+          DATABASE_URI: "postgresql://postgres:pgs3cr3t@postgres:5432/testdb"
