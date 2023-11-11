@@ -162,6 +162,26 @@ tests/              - test cases package
         `HTTP_200_OK` if found and successfully restored
 
         `HTTP_404_NOT_FOUND` if not found
+     
+**6. Query by customer first name/last name/name**
+   - Description
+
+     This API is used to query a customer by the name
+  
+   - Request URL
+
+     `/customers?first_name=customer_first_name&last_name=customer_last_name`
+
+     `/customers?first_name=customer_first_name`
+
+     `/customers?last_name=customer_last_name`
+  
+  
+   - Response
+     
+     `HTTP_200_OK` if found
+     
+     `HTTP_404_NOT_FOUND` if not found
 
 
 ## How to test
