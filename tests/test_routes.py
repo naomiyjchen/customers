@@ -149,13 +149,13 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         test_customer.id = response.get_json()["id"]
-        response = self.client.delete(f"{BASE_URL}/{test_customer.id}")
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        response = self.client.put(f"{BASE_URL}/{test_customer.id}/deactivate")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get(f"{BASE_URL}/{test_customer.id}")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        response = self.client.patch(f"{BASE_URL}/{test_customer.id}")
+        response = self.client.put(f"{BASE_URL}/{test_customer.id}/restore")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get(f"{BASE_URL}/{test_customer.id}")
@@ -278,5 +278,5 @@ class TestYourResourceServer(TestCase):
 
     def test_restore_invalid_id(self):
         """It should return 404 not found"""
-        response = self.client.patch(f"{BASE_URL}/{'193759541'}")
+        response = self.client.put(f"{BASE_URL}/{'193759541'}/restore")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
