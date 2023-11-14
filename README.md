@@ -63,7 +63,8 @@ tests/              - test cases package
 | GET | "/customers/<int:customer_id>" | List the information of the Customer with customer_id | 
 | PUT | "/customers/<int:customer_id>" | Update the the information of Customer with the customer_id  | 
 | DELETE | "/customers/<int:customer_id>" | Delete the Customer with customer_id | 
-| PATCH | "/customers/<int:customer_id>" | Restore a deleted account with customer_id |
+| PUT | "/customers/<int:customer_id>/deactivate" | Deactivate an account with customer_id |
+| PUT | "/customers/<int:customer_id>/restore" | Restore a deleted account with customer_id |
 
 ## API Calls
 
@@ -143,15 +144,32 @@ tests/              - test cases package
   
    - Example
 
-**6. Restore a deleted customer record**
+**6. Deactivate a cutomer record based on Customer ID**
+
+   - Description
+     
+         Deactivate the customer information based on Customer ID
+  
+   - Request URL:
+   
+       "/customers/<int:customer_id>/deactivate" PUT request
+  
+   - Request Body: /
+  
+   - Response
+
+         HTTP_200_OK
+
+
+**7. Restore a deactivated customer record**
 
    - Description
 
-        This API call is used to restore a deleted customer record with customer_id from the database.
+        This API call is used to restore a deactivated customer record with customer_id from the database.
 
    - Request URL
 
-        `"/customers/<int:customer_id>"` PATCH request
+        `"/customers/<int:customer_id>/restore"` PUT request
   
    - Request Body
 
@@ -163,7 +181,7 @@ tests/              - test cases package
 
         `HTTP_404_NOT_FOUND` if not found
      
-**6. Query by customer first name/last name/name**
+**8. Query by customer first name/last name/name**
    - Description
 
      This API is used to query a customer by the name

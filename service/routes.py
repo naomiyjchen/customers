@@ -110,8 +110,7 @@ def delete_customers(customer_id):
     app.logger.info("Request to delete customer with id: %s", customer_id)
     customer = Customer.find(customer_id)
     if customer:
-        # customer.delete()
-        customer.deactivate()
+        customer.delete()
 
     app.logger.info("Customer with ID [%s] delete complete.", customer_id)
     return "", status.HTTP_204_NO_CONTENT
@@ -177,11 +176,32 @@ def list_customers():
 
 
 ######################################################################
-# Restore a deleted Customer account by its customerID
+# DEACTIVATE A Customer
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>", methods=["PATCH"])
+@app.route("/customers/<int:customer_id>/deactivate", methods=["PUT"])
+def deactivate_customers(customer_id):
+    """
+    Deactivate a Customer
+
+    This endpoint will deactivate a Customer based the id specified in the path
+    """
+    app.logger.info("Request to deactivate customer with id: %s", customer_id)
+    customer = Customer.find(customer_id)
+    if customer:
+        customer.deactivate()
+
+    app.logger.info("Customer with ID [%s] deactivate complete.", customer_id)
+    return "", status.HTTP_200_OK
+
+
+######################################################################
+# Restore a deactivated Customer account by its customerID
+######################################################################
+
+
+@app.route("/customers/<int:customer_id>/restore", methods=["PUT"])
 def restore_customers(customer_id):
     """
     Restore the account by its ID
