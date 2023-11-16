@@ -20,17 +20,21 @@ from . import app
 # GET INDEX
 ######################################################################
 @app.route("/")
+# def index():
+#     """Root URL response"""
+#     return (
+#         jsonify(
+#             name="Customer Demo REST API Service",
+#             version="2.0",
+#             paths=url_for("list_customers", _external=True),
+#         ),
+#         # "Reminder: return some useful information in json format about the service here",
+#         status.HTTP_200_OK,
+#     )
+@app.route("/")
 def index():
-    """Root URL response"""
-    return (
-        jsonify(
-            name="Customer Demo REST API Service",
-            version="2.0",
-            paths=url_for("list_customers", _external=True),
-        ),
-        # "Reminder: return some useful information in json format about the service here",
-        status.HTTP_200_OK,
-    )
+    """Base URL for our service"""
+    return app.send_static_file("index.html")
 
 
 ######################################################################
