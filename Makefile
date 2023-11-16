@@ -61,17 +61,7 @@ login: ## Login to IBM Cloud using yur api key
 	kubectl cluster-info
 
 .PHONY: deploy
-deploy: ## Deploy the service on local Kubernetes
+depoy: ## Deploy the service on local Kubernetes
 	$(info Deploying service locally...)
-	kubectl apply -f k8s/
-
-
-.PHONY: k8s_config
-k8s_config: 
-	kubectl create namespace customers
-	kubectl config set-context --current --namespace customers
-
-.PHONY: k8s_clean
-k8s_clean:
-	kubectl delete -f /k8s
+	kubectl apply -f deploy/
 

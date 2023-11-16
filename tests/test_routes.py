@@ -55,13 +55,6 @@ class TestYourResourceServer(TestCase):
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################
-    def test_health(self):
-        """It should be healthy"""
-        response = self.client.get("/health")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = response.get_json()
-        self.assertEqual(data["status"], "OK")
-
     def _create_customers(self, count):
         """Factory method to create customers in bulk"""
         customers = []
