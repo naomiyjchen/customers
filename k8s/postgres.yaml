@@ -31,17 +31,10 @@ spec:
           volumeMounts:
           - name: postgres-storage
             mountPath: /var/lib/postgresql/data
-          resources:
-            limits:
-              cpu: "0.50"
-              memory: "128Mi"
-            requests:
-              cpu: "0.25"
-              memory: "64Mi"
       volumes:
       - name: postgres-storage
-        emptyDir: {}
-
+        persistentVolumeClaim:
+          claimName: postgres-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
