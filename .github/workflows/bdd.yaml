@@ -50,8 +50,7 @@ jobs:
       - name: Run the service locally
         run: |
           echo "\n*** STARTING APPLICATION ***\n"
-          gunicorn --log-level=critical --bind=0.0.0.0:8080 service:app &
-          sleep 5
+          honcho start
           curl -i http://localhost:8000/health
           echo "\n*** SERVER IS RUNNING ***"
         env:
