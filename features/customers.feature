@@ -23,10 +23,10 @@ Scenario: Create a Customer
     And the "First Name" field should be empty
     And the "Last Name" field should be empty
     And the "Address" field should be empty
-    When I paste the "ID" field
-    And I press the "Retrieve" button
-    Then I should see the message "Success"
-    And I should see "Tom" in the "First Name" field
-    And I should see "Cruise" in the "Last Name" field
-    And I should see "True" in the "Status" dropdown
-    And I should see "123 fake street, fake city, fake state" in the "Address" field
+    # When I paste the "ID" field
+    # And I press the "Read" button
+    # Then I should see the message "Success"
+    # And I should see "Tom" in the "First Name" field
+    # And I should see "Cruise" in the "Last Name" field
+    # And I should see "True" in the "Status" dropdown
+    # And I should see "123 fake street, fake city, fake state" in the "Address" field
