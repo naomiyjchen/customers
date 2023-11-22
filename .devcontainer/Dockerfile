@@ -1,5 +1,9 @@
 # Image for a NYU Lab development environment
-FROM rofrano/nyu-devops-base:fa23
+FROM rofrano/pipeline-selenium:latest
+
+# Become a regular user for development
+ARG USERNAME=vscode
+USER $USERNAME
 
 # Set up the Python development environment
 WORKDIR /app
