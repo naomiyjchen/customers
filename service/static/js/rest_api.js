@@ -39,13 +39,13 @@ $(function () {
 
         let first_name = $("#customer_first_name").val();
         let last_name = $("#customer_last_name").val();
-        let status = $("#customer_status").val() == "true";
+        let status = $("#customer_status").val() == "True";
         let address = $("#customer_address").val();
 
         let data = {
             "first name": first_name,
             "last name": last_name,
-            "status": status,
+            "active": status,
             "address": address,
         };
 
@@ -85,7 +85,7 @@ $(function () {
         let data = {
             "first name": first_name,
             "last name": last_name,
-            "status": status,
+            "active": status,
             "address": address,
         };
 
