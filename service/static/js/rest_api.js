@@ -39,7 +39,7 @@ $(function () {
 
         let first_name = $("#customer_first_name").val();
         let last_name = $("#customer_last_name").val();
-        let status = $("#customer_status").val() == "True";
+        let status = $("#customer_status").val() == "true";
         let address = $("#customer_address").val();
 
         let data = {
