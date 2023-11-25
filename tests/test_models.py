@@ -157,10 +157,10 @@ class TestCustomer(unittest.TestCase):
         self.assertNotEqual(data, None)
         self.assertIn("id", data)
         self.assertEqual(data["id"], customer.id)
-        self.assertIn("first name", data)
-        self.assertEqual(data["first name"], customer.first_name)
-        self.assertIn("last name", data)
-        self.assertEqual(data["last name"], customer.last_name)
+        self.assertIn("first_name", data)
+        self.assertEqual(data["first_name"], customer.first_name)
+        self.assertIn("last_name", data)
+        self.assertEqual(data["last_name"], customer.last_name)
         self.assertIn("address", data)
         self.assertEqual(data["address"], customer.address)
 
@@ -171,13 +171,13 @@ class TestCustomer(unittest.TestCase):
         customer.deserialize(data)
         self.assertNotEqual(customer, None)
         self.assertEqual(customer.id, None)
-        self.assertEqual(customer.first_name, data["first name"])
-        self.assertEqual(customer.last_name, data["last name"])
+        self.assertEqual(customer.first_name, data["first_name"])
+        self.assertEqual(customer.last_name, data["last_name"])
         self.assertEqual(customer.address, data["address"])
 
     def test_deserialize_missing_data(self):
         """It should not deserialize a Customer with missing data"""
-        data = {"id": 1, "first name": "Vernon"}
+        data = {"id": 1, "first_name": "Vernon"}
         customer = Customer()
         self.assertRaises(DataValidationError, customer.deserialize, data)
 
@@ -188,8 +188,8 @@ class TestCustomer(unittest.TestCase):
         self.assertRaises(DataValidationError, customer.deserialize, data)
         data = {
             "id": 1,
-            "first name": "abc",
-            "last name": "def",
+            "first_name": "abc",
+            "last_name": "def",
             "address": "ghi",
             "active": "not Boolean",
         }
