@@ -158,7 +158,7 @@ $(function () {
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("ustomer has been Deleted!")
+            flash_message("Customer has been Deleted!")
         });
 
         ajax.fail(function(res){
@@ -189,6 +189,7 @@ $(function () {
 
 
         let queryString = ""
+
 
         if (first_name) {
             queryString += 'first_name=' + first_name

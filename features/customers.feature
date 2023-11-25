@@ -36,6 +36,36 @@ Scenario: Create a Customer
     And I should see "True" in the "Status" dropdown
     And I should see "123 fake street, fake city, fake state" in the "Address" field
 
+Scenario: Query by first name 
+    When I visit the "Home Page"
+    And I set the "First Name" to "Michael"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Michael" in the results
+
+Scenario: Query by Name
+    When I visit the "Home Page"
+    And I set the "First Name" to "Michael"
+    And I set the "Last Name" to "Parker"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Michael" in the results
+
+Scenario: Query by last name 
+    When I visit the "Home Page"
+    And I set the "Last Name" to "Parker"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Michael" in the results
+
+Scenario: Query by address
+    When I visit the "Home Page"
+    And I set the "Address" to "1724 Green Acres Road, Rocky Mount, New York, 00000"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Michael" in the results
+
+
 Scenario: Update a Customer
     When I visit the "Home Page"
     And I set the "First Name" to "Michael"
