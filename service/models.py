@@ -76,8 +76,8 @@ class Customer(db.Model):
         """Serializes a Customer into a dictionary"""
         return {
             "id": self.id,
-            "first name": self.first_name,
-            "last name": self.last_name,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
             "address": self.address,
             "active": self.status,
         }
@@ -89,8 +89,8 @@ class Customer(db.Model):
             data (dict): A dictionary containing the Customer data
         """
         try:
-            self.first_name = data["first name"]
-            self.last_name = data["last name"]
+            self.first_name = data["first_name"]
+            self.last_name = data["last_name"]
             self.address = data["address"]
             if isinstance(data["active"], bool):
                 self.status = data["active"]

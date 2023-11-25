@@ -9,7 +9,7 @@ $(function () {
         $("#customer_id").val(res.id);
         $("#customer_first_name").val(res.first_name);
         $("#customer_last_name").val(res.last_name);
-        if (res.status == true) {
+        if (res.active == true) {
             $("#customer_status").val("true");
         } else {
             $("#customer_status").val("false");
@@ -43,8 +43,8 @@ $(function () {
         let address = $("#customer_address").val();
 
         let data = {
-            "first name": first_name,
-            "last name": last_name,
+            "first_name": first_name,
+            "last_name": last_name,
             "active": status,
             "address": address,
         };
@@ -83,8 +83,8 @@ $(function () {
 
 
         let data = {
-            "first name": first_name,
-            "last name": last_name,
+            "first_name": first_name,
+            "last_name": last_name,
             "active": status,
             "address": address,
         };
@@ -189,11 +189,11 @@ $(function () {
         let queryString = ""
 
         if (first_name) {
-            queryString += 'first name=' + first_name
+            queryString += 'first_name=' + first_name
         
         }
         if (last_name) {
-            queryString += 'last name=' + last_name
+            queryString += 'last_name=' + last_name
         }
         
         if (address) {
