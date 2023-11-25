@@ -185,6 +185,8 @@ $(function () {
         let first_name = $("#customer_first_name").val();
         let last_name = $("#customer_last_name").val();
         let address = $("#customer_address").val();
+        let status = $("#customer_status").val() == "true";
+
 
         let queryString = ""
 
@@ -192,12 +194,29 @@ $(function () {
             queryString += 'first_name=' + first_name
         
         }
-        if (last_name) {
-            queryString += 'last_name=' + last_name
-        }
         
+        if (last_name) {
+            if (queryString.length > 0) {
+                queryString += '&last_name=' + last_name
+            } else {
+                queryString += 'last_name=' + last_name
+            }
+        }
+
         if (address) {
-            queryString += 'address=' + address
+            if (queryString.length > 0) {
+                queryString += '&address=' + address
+            } else {
+                queryString += 'address=' + address
+            }
+        }
+
+        if (status) {
+            if (queryString.length > 0) {
+                queryString += '&status=' + status
+            } else {
+                queryString += 'status=' + status
+            }
         }
 
         $("#flash_message").empty();
@@ -223,7 +242,7 @@ $(function () {
             let firstCustomer = "";
             for(let i = 0; i < res.length; i++) {
                 let customer = res[i];
-                table +=  `<tr id="row_${i}"><td>${customer.id}</td><td>${customer.first_name}</td><td>${customer.last_name}</td><td>${customer.status}</td><td>${customer.address}</td></tr>`;
+                table +=  `<tr id="row_${i}"><td>${customer.id}</td><td>${customer.first_name}</td><td>${customer.last_name}</td><td>${customer.active}</td><td>${customer.address}</td></tr>`;
                 if (i == 0) {
                     firstCustomer = customer;
                 }

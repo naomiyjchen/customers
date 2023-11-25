@@ -169,6 +169,7 @@ def list_customers():
     customers = []
     first_name = request.args.get("first_name")
     last_name = request.args.get("last_name")
+    active = request.args.get("status")
     address = request.args.get("address")
     if first_name and last_name:
         # Find by name
@@ -181,9 +182,8 @@ def list_customers():
         customers = Customer.find_by_address(address)
     else:
         customers = Customer.all()
-    # customers = Customer.all()
 
-    results = [customer.serialize() for customer in customers if customer.status]
+    results = [customer.serialize() for customer in customers]
     app.logger.info("Returning %d customers", len(results))
     return jsonify(results), status.HTTP_200_OK
 
