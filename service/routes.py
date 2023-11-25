@@ -169,7 +169,6 @@ def list_customers():
     customers = []
     first_name = request.args.get("first_name")
     last_name = request.args.get("last_name")
-    active = request.args.get("status")
     address = request.args.get("address")
     if first_name and last_name:
         # Find by name
