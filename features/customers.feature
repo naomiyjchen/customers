@@ -2,7 +2,6 @@ Feature: The customer service back-end
     As a Service Provider
     I need a RESTful customer data service
     So that I can keep track of all my customers
-
         
 Scenario: The server is running
     When I visit the "Home Page"
@@ -30,3 +29,34 @@ Scenario: Create a Customer
     And I should see "Cruise" in the "Last Name" field
     And I should see "True" in the "Status" dropdown
     And I should see "123 fake street, fake city, fake state" in the "Address" field
+
+Scenario: Query by first name 
+    When I visit the "Home Page"
+    And I set the "First Name" to "Tom"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Tom" in the results
+
+Scenario: Query by Name
+    When I visit the "Home Page"
+    And I set the "First Name" to "Tom"
+    And I set the "Last Name" to "Cruise"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Tom" in the results
+
+Scenario: Query by last name 
+    When I visit the "Home Page"
+    And I set the "Last Name" to "Cruise"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Tom" in the results
+
+Scenario: Query by address
+    When I visit the "Home Page"
+    And I set the "Address" to "123 fake street, fake city, fake state"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Tom" in the results
+
+

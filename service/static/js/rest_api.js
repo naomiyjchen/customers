@@ -158,7 +158,7 @@ $(function () {
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("ustomer has been Deleted!")
+            flash_message("Customer has been Deleted!")
         });
 
         ajax.fail(function(res){
@@ -187,15 +187,18 @@ $(function () {
         let address = $("#customer_address").val();
 
         let queryString = ""
+        if (first_name && last_name) {
+            queryString += 'first_name=' + first_name + '&last_name='+last_name;
+        } else {
+            if (first_name) {
+                queryString += 'first_name=' + first_name
+            
+            }
+            if (last_name) {
+                queryString += 'last_name=' + last_name
+            }
+        }
 
-        if (first_name) {
-            queryString += 'first_name=' + first_name
-        
-        }
-        if (last_name) {
-            queryString += 'last_name=' + last_name
-        }
-        
         if (address) {
             queryString += 'address=' + address
         }
@@ -223,7 +226,7 @@ $(function () {
             let firstCustomer = "";
             for(let i = 0; i < res.length; i++) {
                 let customer = res[i];
-                table +=  `<tr id="row_${i}"><td>${customer.id}</td><td>${customer.first_name}</td><td>${customer.last_name}</td><td>${customer.status}</td><td>${customer.address}</td></tr>`;
+                table +=  `<tr id="row_${i}"><td>${customer.id}</td><td>${customer.first_name}</td><td>${customer.last_name}</td><td>${customer.active}</td><td>${customer.address}</td></tr>`;
                 if (i == 0) {
                     firstCustomer = customer;
                 }
