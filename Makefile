@@ -73,5 +73,5 @@ k8s_config:
 
 .PHONY: k8s_clean
 k8s_clean:
-	kubectl delete -f /k8s
+	kubectl delete -f k8s
 
