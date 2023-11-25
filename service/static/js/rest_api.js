@@ -185,22 +185,39 @@ $(function () {
         let first_name = $("#customer_first_name").val();
         let last_name = $("#customer_last_name").val();
         let address = $("#customer_address").val();
+        let status = $("#customer_status").val() == "true";
+
 
         let queryString = ""
-        if (first_name && last_name) {
-            queryString += 'first_name=' + first_name + '&last_name='+last_name;
-        } else {
-            if (first_name) {
-                queryString += 'first_name=' + first_name
-            
-            }
-            if (last_name) {
+
+
+        if (first_name) {
+            queryString += 'first_name=' + first_name
+        
+        }
+        
+        if (last_name) {
+            if (queryString.length > 0) {
+                queryString += '&last_name=' + last_name
+            } else {
                 queryString += 'last_name=' + last_name
             }
         }
 
         if (address) {
-            queryString += 'address=' + address
+            if (queryString.length > 0) {
+                queryString += '&address=' + address
+            } else {
+                queryString += 'address=' + address
+            }
+        }
+
+        if (status) {
+            if (queryString.length > 0) {
+                queryString += '&status=' + status
+            } else {
+                queryString += 'status=' + status
+            }
         }
 
         $("#flash_message").empty();

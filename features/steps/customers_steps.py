@@ -24,16 +24,19 @@ For information on Waiting until elements are present in the HTML see:
 """
 import requests
 from behave import given
-from compare import expect
+
+HTTP_200_OK = 200
+HTTP_201_CREATED = 201
+HTTP_204_NO_CONTENT = 204
 
 
 @given('the following customers')
 def step_impl(context):
     """ Delete all Customers and load new ones """
     # List all of the customers and delete them one by one
-    rest_endpoint = f"{context.BASE_URL}/customers"
+    rest_endpoint = f"{context.base_url}/customers"
+    context.resp = requests.get(rest_endpoint)
     assert(context.resp.status_code == HTTP_200_OK)
-    expect(context.resp.status_code).to_equal(200)
     for customer in context.resp.json():
         context.resp = requests.delete(f"{rest_endpoint}/{customer['id']}")
         assert(context.resp.status_code == HTTP_204_NO_CONTENT)
@@ -41,10 +44,10 @@ def step_impl(context):
     # load the database with new customers
     for row in context.table:
         payload = {
-            "address": row['address'], 
             "first_name": row['first_name'],
             "last_name": row['last_name'],
-            "status": row['status'] in ['True', 'true', '1']
+            "address": row['address'],
+            "active": row['active'] in ['True', 'true', '1']
         }
         context.resp = requests.post(rest_endpoint, json=payload)
         assert(context.resp.status_code == HTTP_201_CREATED)
