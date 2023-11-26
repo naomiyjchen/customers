@@ -88,3 +88,14 @@ Scenario: Update a Customer
     Then I should see the message "Success"
     And I should see "Mike" in the results
     And I should not see "Michael" in the results
+
+Scenario: Delete a Customer
+    When I visit the "Home Page"
+    And I set the "First Name" to "Michael"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Michael" in the "First Name" field
+    And I should see "Parker" in the "Last Name" field
+    And I should see "1724 Green Acres Road, Rocky Mount, New York, 00000" in the "Address" field
+    When I press the "Delete" button
+    Then I should see the message "Customer has been Deleted!"
