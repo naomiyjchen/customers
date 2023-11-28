@@ -102,8 +102,40 @@ Scenario: Delete a Customer
 
 Scenario: List all customers
     When I visit the "Home Page"
-    And I press the "Query" button
+    And I press the "List" button
     Then I should see the message "Success"
     And I should see "Michael" in the results
     And I should see "Keith" in the results
     And I should not see "Mike" in the results
+
+Scenario: Restore Deactivated customers
+    When I visit the "Home Page"
+    And I set the "First Name" to "Michael"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Michael" in the "First Name" field
+    And I should see "Parker" in the "Last Name" field
+    And I should see "true" in the "Status" field
+    And I should see "1724 Green Acres Road, Rocky Mount, New York, 00000" in the "Address" field
+    When I copy the "ID" field
+    And I press the "Deactivate" button
+    Then I should see the message "Success"
+    When I press the "Clear" button
+    And I set the "First Name" to "Michael"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Michael" in the "First Name" field
+    And I should see "Parker" in the results
+    And I should see "false" in the results
+    And I should see "1724 Green Acres Road, Rocky Mount, New York, 00000" in the results
+    When I press the "Restore" button
+    Then I should see the message "Success"
+    When I press the "Clear" button
+    And I set the "First Name" to "Michael"
+    And I press the "Query" button
+    Then I should see the message "Success"
+    And I should see "Michael" in the "First Name" field
+    And I should see "Parker" in the results
+    And I should see "true" in the results
+    And I should see "1724 Green Acres Road, Rocky Mount, New York, 00000" in the results
+
