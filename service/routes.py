@@ -4,7 +4,7 @@ My Service
 Describe what your service does here
 """
 
-from flask import jsonify, request, url_for, abort
+from flask import jsonify, abort
 from flask_restx import Resource, fields, reqparse, inputs
 from service.common import status  # HTTP Status Codes
 from service.models import Customer
@@ -93,6 +93,8 @@ customer_args.add_argument(
 ######################################################################
 #  PATH: /customers/{id}
 ######################################################################
+@api.route("/customers/<int:customer_id>", strict_slashes=False)
+@api.param("customer_id", "The Customer identifier")
 class CustomerResource(Resource):
     """
     CustomerResource class
@@ -181,6 +183,7 @@ class CustomerResource(Resource):
 
         return "", status.HTTP_204_NO_CONTENT
 
+
 ######################################################################
 #  PATH: /customers
 ######################################################################
@@ -241,10 +244,11 @@ class CustomerCollection(Resource):
         return customer.serialize(), status.HTTP_201_CREATED, {"Location": location_url}
 
 
-
 ######################################################################
 #  PATH: /customers/{id}/deactivate
 ######################################################################
+@api.route("/customers/<int:customer_id>/deactivate", strict_slashes=False)
+@api.param("customer_id", "The Customer identifier")
 class DeactivateResource(Resource):
     """Handles deactivate endpoint"""
 
@@ -272,8 +276,10 @@ class DeactivateResource(Resource):
 
 
 #####################################################################
-#  PATH: /customers/{id}/deactivate
+#  PATH: /customers/{id}/restore
 ######################################################################
+@api.route("/customers/<int:customer_id>/restore", strict_slashes=False)
+@api.param("customer_id", "The Customer identifier")
 class RestoreResource(Resource):
     """Handles restore endpoint"""
 
