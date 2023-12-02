@@ -2,57 +2,85 @@
 Test cases for Customer Model
 
 """
-import os
 import logging
-import unittest
-
-from service.models import Customer, DataValidationError, db
-from service import app
+from unittest import TestCase
+from unittest.mock import patch
+from requests import HTTPError, ConnectionError  # pylint: disable=redefined-builtin
+from service.models import Customer, DataValidationError, DatabaseConnectionError
 from tests.factories import CustomerFactory
 
 
-# from tests.factories import CustomerFactory
+# cspell:ignore VCAP SQLDB
+VCAP_SERVICES = {
+    "cloudantNoSQLDB": [
+        {
+            "credentials": {
+                "username": "admin",
+                "password": "pass",
+                "host": "localhost",
+                "port": 5984,
+                "url": "http://admin:pass@localhost:5984",
+            }
+        }
+    ]
+}
 
-DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
-)
+VCAP_NO_SERVICES = {"noCloudant": []}
+
+BINDING_CLOUDANT = {
+    "username": "admin",
+    "password": "pass",
+    "host": "localhost",
+    "port": 5984,
+    "url": "http://admin:pass@localhost:5984",
+}
 
 
 ######################################################################
 #  Customer   M O D E L   T E S T   C A S E S
 ######################################################################
 # pylint: disable=too-many-public-methods
-class TestCustomer(unittest.TestCase):
+class BaseTestCase(TestCase):
     """Test Cases for Customer Model"""
 
-    @classmethod
-    def setUpClass(cls):
-        """This runs once before the entire test suite"""
-        app.config["TESTING"] = True
-        app.config["DEBUG"] = False
-        app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
-        app.logger.setLevel(logging.CRITICAL)
-        db.drop_all()
-        Customer.init_db(app)
-
-    @classmethod
-    def tearDownClass(cls):
-        """This runs once after the entire test suite"""
-        db.session.close()
-
     def setUp(self):
-        """This runs before each test"""
-        db.session.query(Customer).delete()  # clean up the last tests
-        db.session.commit()
+        """Initialize the Cloudant database"""
+        Customer.init_db("test")
+        Customer.remove_all()
 
-    def tearDown(self):
-        """This runs after each test"""
-        db.session.remove()
+    # @classmethod
+    # def setUpClass(cls):
+    #     """This runs once before the entire test suite"""
+    #     app.config["TESTING"] = True
+    #     app.config["DEBUG"] = False
+    #     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
+    #     app.logger.setLevel(logging.CRITICAL)
+    #     db.drop_all()
+    #     Customer.init_db(app)
+
+    # @classmethod
+    # def tearDownClass(cls):
+    #     """This runs once after the entire test suite"""
+    #     db.session.close()
+
+    # def tearDown(self):
+    #     """This runs after each test"""
+    #     db.session.remove()
+    def _create_customers(self, count: int) -> list:
+        """Creates a collection of customers in the database"""
+        customer_collection = []
+        for _ in range(count):
+            customer = CustomerFactory()
+            customer.create()
+            customer_collection.append(customer)
+        return customer_collection
 
     ######################################################################
     #  T E S T   C A S E S
     ######################################################################
 
+
+class TestCustomerModel(BaseTestCase):
     def test_object(self):
         """It should create a customer object"""
         customer = Customer(
@@ -122,13 +150,6 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customers[0].id, original_id)
         self.assertEqual(customers[0].first_name, "Joshua")
 
-    def test_update_no_id(self):
-        """It should not Update a Customer with no id"""
-        customer = CustomerFactory()
-        logging.debug(customer)
-        customer.id = None
-        self.assertRaises(DataValidationError, customer.update)
-
     def test_delete_a_customer(self):
         """It should Delete a Customer"""
         customer = CustomerFactory()
@@ -175,6 +196,17 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.last_name, data["last_name"])
         self.assertEqual(customer.address, data["address"])
 
+
+class TestPetModelFailures(BaseTestCase):
+    """Failure Test Cases for Customer Model"""
+
+    def test_update_no_id(self):
+        """It should not Update a Customer with no id"""
+        customer = CustomerFactory()
+        logging.debug(customer)
+        customer.id = None
+        self.assertRaises(DataValidationError, customer.update)
+
     def test_deserialize_missing_data(self):
         """It should not deserialize a Customer with missing data"""
         data = {"id": 1, "first_name": "Vernon"}
@@ -194,6 +226,10 @@ class TestCustomer(unittest.TestCase):
             "active": "not Boolean",
         }
         self.assertRaises(DataValidationError, customer.deserialize, data)
+
+
+class TestPetModelQueries(BaseTestCase):
+    """Query Test Cases for Customer Model"""
 
     def test_find_customer(self):
         """It should Find a Customer by ID"""
@@ -273,3 +309,46 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(found.count(), count)
         for customer in found:
             self.assertEqual(customer.address, address)
+
+
+class TestPetModelMocks(BaseTestCase):
+    """Mock Test Cases for Pet Model"""
+
+    @patch("cloudant.database.CloudantDatabase.create_document")
+    def test_http_error(self, bad_mock):
+        """It should not create with HTTP error"""
+        bad_mock.side_effect = HTTPError()
+        customer = CustomerFactory()
+        customer.create()
+        self.assertIsNone(customer.id)
+
+    @patch("cloudant.document.Document.exists")
+    def test_document_not_exist(self, bad_mock):
+        """It should handle a bad document"""
+        bad_mock.return_value = False
+        customer = CustomerFactory()
+        customer.create()
+        self.assertIsNone(customer.id)
+
+    @patch("cloudant.database.CloudantDatabase.__getitem__")
+    def test_key_error_on_update(self, bad_mock):
+        """It should  throw a KeyError on update"""
+        bad_mock.side_effect = KeyError()
+        customer = CustomerFactory()
+        customer.create()
+        customer.first_name = "Rumpelstiltskin"
+        customer.update()
+
+    @patch("cloudant.database.CloudantDatabase.__getitem__")
+    def test_key_error_on_delete(self, bad_mock):
+        """It should throw a KeyError on delete"""
+        bad_mock.side_effect = KeyError()
+        customer = CustomerFactory()
+        customer.create()
+        customer.delete()
+
+    @patch("cloudant.client.Cloudant.__init__")
+    def test_connection_error(self, bad_mock):
+        """It should handle Connection error"""
+        bad_mock.side_effect = ConnectionError()
+        self.assertRaises(DatabaseConnectionError, Customer.init_db, "test")

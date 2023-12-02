@@ -3,8 +3,9 @@ My Service
 
 Describe what your service does here
 """
-
-from flask import jsonify, abort
+import secrets
+from functools import wraps
+from flask import request, jsonify
 from flask_restx import Resource, fields, reqparse, inputs
 from service.common import status  # HTTP Status Codes
 from service.models import Customer
@@ -25,10 +26,10 @@ def index():
 ######################################################################
 # check service health
 ######################################################################
-@app.route("/health")
-def health():
-    """Health Status"""
-    return jsonify({"status": "OK"}), status.HTTP_200_OK
+# @app.route("/health")
+# def health():
+#     """Health Status"""
+#     return jsonify({"status": "OK"}), status.HTTP_200_OK
 
 
 # Define the model so that the docs reflect what can be sent
@@ -85,9 +86,33 @@ customer_args.add_argument(
     help="List Customers by active",
 )
 
+
 ######################################################################
-#  R E S T   A P I   E N D P O I N T S
+# Authorization Decorator
 ######################################################################
+def token_required(func):
+    """Decorator to require a token for this endpoint"""
+
+    @wraps(func)
+    def decorated(*args, **kwargs):
+        token = None
+        if "X-Api-Key" in request.headers:
+            token = request.headers["X-Api-Key"]
+
+        if app.config.get("API_KEY") and app.config["API_KEY"] == token:
+            return func(*args, **kwargs)
+
+        return {"message": "Invalid or missing token"}, 401
+
+    return decorated
+
+
+######################################################################
+# Function to generate a random API key (good for testing)
+######################################################################
+def generate_apikey():
+    """Helper function used when testing API keys"""
+    return secrets.token_hex(16)
 
 
 ######################################################################
@@ -203,7 +228,9 @@ class CustomerCollection(Resource):
         customers = []
         args = customer_args.parse_args()
         if args["first_name"] and args["last_name"]:
-            app.logger.info("Filtering by name: %s %s", args["first_name"], args["last_name"])
+            app.logger.info(
+                "Filtering by name: %s %s", args["first_name"], args["last_name"]
+            )
             customers = Customer.find_by_name(args["first_name"], args["last_name"])
         elif args["first_name"]:
             app.logger.info("Filtering by first name: %s", args["first_name"])
@@ -240,8 +267,31 @@ class CustomerCollection(Resource):
         customer.deserialize(api.payload)
         customer.create()
         app.logger.info("Customer with new id [%s] created!", customer.id)
-        location_url = api.url_for(CustomerResource, customer_id=customer.id, _external=True)
+        location_url = api.url_for(
+            CustomerResource, customer_id=customer.id, _external=True
+        )
         return customer.serialize(), status.HTTP_201_CREATED, {"Location": location_url}
+
+    # ------------------------------------------------------------------
+    # DELETE ALL CUSTOMERS (for testing only)
+    # ------------------------------------------------------------------
+    @api.doc("delete_all_customers", security="apikey")
+    @api.response(204, "All Customers deleted")
+    @token_required
+    def delete(self):
+        """
+        Delete all Customer
+
+        This endpoint will delete all Customer only if the system is under test
+        """
+        app.logger.info("Request to Delete all customers...")
+        if "TESTING" in app.config and app.config["TESTING"]:
+            Customer.remove_all()
+            app.logger.info("Removed all Customers from the database")
+        else:
+            app.logger.warning("Request to clear database while system not under test")
+
+        return "", status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
@@ -255,7 +305,7 @@ class DeactivateResource(Resource):
     @api.doc("deactivate_customers")
     @api.response(200, "Customer deactivated")
     @api.response(404, "Customer not found")
-    def deactivate_customers(self, customer_id):
+    def put(self, customer_id):
         """
         Deactivate a Customer
 
@@ -267,9 +317,9 @@ class DeactivateResource(Resource):
             customer.deactivate()
         else:
             abort(
-                    status.HTTP_404_NOT_FOUND,
-                    f"Customer with id '{customer_id}' was not found.",
-                )
+                status.HTTP_404_NOT_FOUND,
+                f"Customer with id '{customer_id}' was not found.",
+            )
 
         app.logger.info("Customer with ID [%s] deactivate complete.", customer_id)
         return "", status.HTTP_200_OK
@@ -287,7 +337,7 @@ class RestoreResource(Resource):
     @api.response(200, "Customer restored")
     @api.response(404, "Customer not found")
     @api.marshal_with(customer_model)
-    def restore_customers(self, customer_id):
+    def put(self, customer_id):
         """
         Restore the account by its ID
         """
@@ -301,3 +351,24 @@ class RestoreResource(Resource):
         customer.status = True
         app.logger.info("Customer with ID [%s] restored.", customer.id)
         return customer.serialize(), status.HTTP_200_OK
+
+
+######################################################################
+#  U T I L I T Y   F U N C T I O N S
+######################################################################
+
+
+def abort(error_code: int, message: str):
+    """Logs errors before aborting"""
+    app.logger.error(message)
+    api.abort(error_code, message)
+
+
+def init_db(dbname="customers"):
+    """Initialize the model"""
+    Customer.init_db(dbname)
+
+
+def data_reset():
+    """Removes all Pets from the database"""
+    Customer.remove_all()
