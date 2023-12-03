@@ -78,6 +78,13 @@ customer_args.add_argument(
     help="List Customers by last name",
 )
 customer_args.add_argument(
+    "address",
+    type=str,
+    location="args",
+    required=False,
+    help="List Customers by address",
+)
+customer_args.add_argument(
     "active",
     type=inputs.boolean,
     location="args",
@@ -220,8 +227,8 @@ class CustomerCollection(Resource):
             app.logger.info("Returning unfiltered list.")
             customers = Customer.all()
 
-        app.logger.info("[%s] Customers returned", len(customers))
         results = [customer.serialize() for customer in customers]
+        app.logger.info("[%s] Customers returned", len(results))
         return results, status.HTTP_200_OK
 
     # ------------------------------------------------------------------

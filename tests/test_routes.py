@@ -287,3 +287,8 @@ class TestYourResourceServer(TestCase):
         """It should return 404 not found"""
         response = self.client.put(f"{BASE_URL}/{'193759541'}/restore")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_deactivate_invalid_id(self):
+        """It should return 404 not found"""
+        response = self.client.put(f"{BASE_URL}/987654321/deactivate")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
