@@ -18,7 +18,7 @@ from tests.factories import CustomerFactory
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
 )
-BASE_URL = "/customers"
+BASE_URL = "/api/customers"
 
 
 ######################################################################
@@ -264,7 +264,7 @@ class TestYourResourceServer(TestCase):
         response = self.client.put(
             f"{BASE_URL}/{new_customer['id']}", json=new_customer
         )
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_customer_no_data(self):
         """It should not Create a customer with missing data"""
@@ -286,4 +286,9 @@ class TestYourResourceServer(TestCase):
     def test_restore_invalid_id(self):
         """It should return 404 not found"""
         response = self.client.put(f"{BASE_URL}/{'193759541'}/restore")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_deactivate_invalid_id(self):
+        """It should return 404 not found"""
+        response = self.client.put(f"{BASE_URL}/987654321/deactivate")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
