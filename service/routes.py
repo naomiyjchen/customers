@@ -203,7 +203,9 @@ class CustomerCollection(Resource):
         customers = []
         args = customer_args.parse_args()
         if args["first_name"] and args["last_name"]:
-            app.logger.info("Filtering by name: %s %s", args["first_name"], args["last_name"])
+            app.logger.info(
+                "Filtering by name: %s %s", args["first_name"], args["last_name"]
+            )
             customers = Customer.find_by_name(args["first_name"], args["last_name"])
         elif args["first_name"]:
             app.logger.info("Filtering by first name: %s", args["first_name"])
@@ -240,7 +242,9 @@ class CustomerCollection(Resource):
         customer.deserialize(api.payload)
         customer.create()
         app.logger.info("Customer with new id [%s] created!", customer.id)
-        location_url = api.url_for(CustomerResource, customer_id=customer.id, _external=True)
+        location_url = api.url_for(
+            CustomerResource, customer_id=customer.id, _external=True
+        )
         return customer.serialize(), status.HTTP_201_CREATED, {"Location": location_url}
 
 
@@ -255,7 +259,7 @@ class DeactivateResource(Resource):
     @api.doc("deactivate_customers")
     @api.response(200, "Customer deactivated")
     @api.response(404, "Customer not found")
-    def deactivate_customers(self, customer_id):
+    def put(self, customer_id):
         """
         Deactivate a Customer
 
@@ -267,9 +271,9 @@ class DeactivateResource(Resource):
             customer.deactivate()
         else:
             abort(
-                    status.HTTP_404_NOT_FOUND,
-                    f"Customer with id '{customer_id}' was not found.",
-                )
+                status.HTTP_404_NOT_FOUND,
+                f"Customer with id '{customer_id}' was not found.",
+            )
 
         app.logger.info("Customer with ID [%s] deactivate complete.", customer_id)
         return "", status.HTTP_200_OK
@@ -287,7 +291,7 @@ class RestoreResource(Resource):
     @api.response(200, "Customer restored")
     @api.response(404, "Customer not found")
     @api.marshal_with(customer_model)
-    def restore_customers(self, customer_id):
+    def put(self, customer_id):
         """
         Restore the account by its ID
         """
