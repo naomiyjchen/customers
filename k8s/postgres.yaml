@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:alpine
+          image: postgres:15-alpine
           ports:
             - containerPort: 5432
               protocol: TCP
@@ -30,7 +30,7 @@ spec:
                   key: password
           volumeMounts:
           - name: postgres-storage
-            mountPath: /var/lib/postgresql/data
+            mountPath: /var/lib/postgresql
       volumes:
       - name: postgres-storage
         persistentVolumeClaim:
@@ -43,11 +43,10 @@ metadata:
   name: postgres-pvc
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
-  storageClassName: ""
 
 ---
 apiVersion: v1
