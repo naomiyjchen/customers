@@ -22,7 +22,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: customers
-        image: cluster-registry:32000/customers:1.0
+        image: cluster-registry:32000/customers:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
