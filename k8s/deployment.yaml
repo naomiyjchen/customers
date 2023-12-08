@@ -46,3 +46,4 @@ spec:
           requests:
             cpu: "0.10"        
             memory: "64Mi"
+            
