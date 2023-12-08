@@ -19,7 +19,7 @@ spec:
     spec:
       serviceAccountName: pipeline
       pipelineRef:
-        name: cd-pipeline
+        name: customer-cd-pipeline
       params:
       - name: APP_NAME
         value: $(tt.params.git-repo-name)
