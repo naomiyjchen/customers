@@ -28,6 +28,6 @@ spec:
       - name: IMAGE_NAME
         value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(tt.params.git-repo-name):$(tt.params.git-revision)
       workspaces:
-      - name: customer-workspace
+      - name: pipeline-workspace
         persistentVolumeClaim:
-          claimName: customer-pipeline-pvc
+          claimName: pipeline-pvc

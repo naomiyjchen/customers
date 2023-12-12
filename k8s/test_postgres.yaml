@@ -1,0 +1,82 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: test-postgres
+  labels:
+    app: test-postgres
+spec:
+  serviceName: "test-postgres"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-postgres
+  template:
+    metadata:
+      labels:
+        app: test-postgres
+    spec:
+      containers:
+        - name: test-postgres
+          image: postgres:15-alpine
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: test-postgres-creds
+                  key: password
+          volumeMounts:
+          - name: postgres-storage
+            mountPath: /var/lib/postgresql
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: test-postgres-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-postgres
+  labels:
+    app: test-postgres
+spec:
+  type: ClusterIP
+  selector:
+    app: test-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+
+---
+# This secret can also be created from the command line using environment variables
+#
+# export DATABASE_URI='postgresql://<place-url-to-database-here>'
+# export POSTGRES_PASSWORD='<place-password-here>'
+#
+# kubectl create secret generic postgres-creds \
+#     --from-literal=password=$POSTGRES_PASSWORD
+#     --from-literal=database_uri=$DATABASE_URI
+#
+apiVersion: v1
+kind: Secret
+metadata:
+  name: test-postgres-creds
+data:
+  password: cG9zdGdyZXM=
+  database_uri: cG9zdGdyZXNxbCtwc3ljb3BnMjovL3Bvc3RncmVzOnBvc3RncmVzQHRlc3QtcG9zdGdyZXM6NTQzMi9wb3N0Z3Jlcw==
