@@ -34,6 +34,10 @@ spec:
       description: Name of the database secrets for green
       name: GREEN_SECRET_NAME
       type: string
+    - default: 'https://customers-yc7093-dev.apps.sandbox-m4.g2pi.p1.openshiftapps.com'
+      description: Name of the service
+      name: BDD_BASE_URL
+      type: string
   tasks:
     - name: git-clone
       params:
@@ -118,6 +122,7 @@ spec:
       runAfter:
         - green
         - pylint
+        - bdd
       taskRef:
         kind: ClusterTask
         name: buildah
@@ -157,6 +162,18 @@ spec:
       taskRef:
         kind: Task
         name: deploy-image
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+    - name: bdd
+      params:
+        - name: BASE_URL
+          value: $(params.BDD_BASE_URL)
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: Task
+        name: bdd
       workspaces:
         - name: source
           workspace: pipeline-workspace
