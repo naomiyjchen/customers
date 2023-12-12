@@ -186,7 +186,6 @@ spec:
             echo "***** Installing dependencies *****"
             python -m pip install --upgrade pip wheel
             pip install -qr requirements.txt
-
             echo "\n*** STARTING APPLICATION ***\n"
             sleep 30
             curl -L -I $(params.BASE_URL)
