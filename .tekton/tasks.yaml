@@ -146,3 +146,50 @@ spec:
           echo Applying manifests in $(inputs.params.manifest_dir) directory
           oc apply -f $(inputs.params.manifest_dir)
           echo -----------------------------------
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: bdd
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/categories: Testing
+    tekton.dev/pipelines.minVersion: "0.17.0"
+    tekton.dev/tags: test, behave
+    tekton.dev/displayName: "behave tests"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  workspaces:
+  - name: source  
+  description: >-
+    This task will perform the bdd tests.
+  params:
+  - name: BASE_URL
+    description: The base url to the customers microservice
+    type: string
+    default: "https://customers-yczhao-dev.apps.sandbox-m3.1530.p1.openshiftapps.com"
+  steps:
+    - name: run
+      image: docker.io/rofrano/pipeline-selenium
+      workingDir: /workspace/source 
+      command: ["/bin/bash", "-c"]
+      env:
+        - name: BASE_URL
+          value: "$(params.BASE_URL)"
+      args: 
+        - |-
+            #!/bin/bash
+            set -e
+
+            echo "***** Installing dependencies *****"
+            python -m pip install --upgrade pip wheel
+            pip install -qr requirements.txt
+
+            echo "\n*** STARTING APPLICATION ***\n"
+            sleep 30
+            curl -L -I $(params.BASE_URL)
+
+            echo "***** Running BDD Tests *****"
+            behave
