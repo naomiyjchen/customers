@@ -31,4 +31,3 @@ spec:
       - name: pipeline-workspace
         persistentVolumeClaim:
           claimName: pipeline-pvc
-
